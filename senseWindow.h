@@ -11,6 +11,8 @@ class QIcon;
 class QTableWidgetItem;
 class QPushButton;
 class customStackedWidget;
+class senseLayout;
+class QStackedWidget;
 QT_END_NAMESPACE
 
 class senseWindow : public QMainWindow
@@ -22,6 +24,11 @@ public:
 
     enum Section {Sensor, Controller, Analysis, StackUp, Pattern, Traces};
 
+public slots:
+    void changeText();
+    void changeText(const QString & string);
+    void setControllerSection();
+    void setSensorSection();
 private:
     QLabel * createLabel(const QString & text);
     QFrame * createTopLayout();
@@ -33,7 +40,12 @@ private:
     QFrame * createSimluationSummaryFrame();
     QPushButton * createLeftPanelPushButton( const QString & text, const QIcon & icon);
     QWidget * createSection(const Section & section);
-    customStackedWidget *central_widget;
+    QStackedWidget *central_widget;
+    senseLayout * layout;
+    QFrame *central_layout_frame;
+    QPushButton * first_button;
+    QPushButton * sensor_button;
+    QPushButton * controller_button;
     QWidget * the_central_widget;
 };
 

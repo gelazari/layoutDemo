@@ -21,18 +21,40 @@
 senseWindow::senseWindow(QWidget * parent)
     :QMainWindow(parent)
 {
-    senseLayout *layout = new senseLayout(parent);
-    layout->addWidget( createCentralLayout(), senseLayout::MIDDLE );
-    layout->addWidget( createTopLayout(), senseLayout::TOP );
-    layout->addWidget( createLeftLayout(), senseLayout::LEFT );
-    layout->addWidget( createLabel("Just a label - Untitled.spj"), senseLayout::BOTTOM );
+    this->layout = new senseLayout();
+    this->central_layout_frame = createCentralLayout();
+    this->layout->addWidget( this->central_layout_frame, senseLayout::MIDDLE );
+    this->layout->addWidget( createTopLayout(), senseLayout::TOP );
+    this->layout->addWidget( createLeftLayout(), senseLayout::LEFT );
+    this->layout->addWidget( createLabel("Just a label - Untitled.spj"), senseLayout::BOTTOM );
 
     this->the_central_widget = new QWidget(this);
     this->the_central_widget->setLayout(layout);
 
+    QObject::connect(this->sensor_button, SIGNAL( clicked() ), this, SLOT(setSensorSection()));
+    QObject::connect(this->controller_button, SIGNAL( clicked() ), this, SLOT(setControllerSection()));
+
     setCentralWidget(this->the_central_widget);
 
     setWindowTitle(tr("Sense Demo App"));
+}
+
+//---------------------------------------------------------------
+
+void senseWindow::setControllerSection()
+{
+    this->central_widget->setCurrentIndex(1);
+    this->sensor_button->setChecked(false);
+    this->controller_button->setChecked(true);
+}
+
+//---------------------------------------------------------------
+
+void senseWindow::setSensorSection()
+{
+    this->central_widget->setCurrentIndex(0);
+    this->sensor_button->setChecked(true);
+    this->controller_button->setChecked(false);
 }
 
 //---------------------------------------------------------------
@@ -46,10 +68,25 @@ QLabel * senseWindow::createLabel(const QString &text)
 
 //---------------------------------------------------------------
 
+void senseWindow::changeText()
+{
+    this->controller_button->setText("asdf");
+}
+
+//---------------------------------------------------------------
+
+void senseWindow::changeText(const QString & string)
+{
+    this->sensor_button->setText(string);
+    this->controller_button->setText(string);
+}
+
+//---------------------------------------------------------------
+
 QFrame * senseWindow::createTopLayout()
 {
-    QPushButton * first_button = new QPushButton;
-
+    this->first_button = new QPushButton;
+    QObject::connect( first_button, SIGNAL(clicked()), this, SLOT(changeText()));
     first_button->setText("The first button");
     first_button->setObjectName("firstButton");
     first_button->setIcon( getIconFromPath("/Users/G_Laza/Desktop/mushroom.ico") );
@@ -93,24 +130,25 @@ QFrame * senseWindow::createTopLayout()
 
 QFrame * senseWindow::createLeftLayout()
 {
-    QPushButton * first_button = createLeftPanelPushButton("Sensor", getIconFromPath("/Users/G_Laza/Desktop/mushroom.ico") );
-    first_button->setObjectName("sensorButton");
+    this->sensor_button = createLeftPanelPushButton("Sensor", getIconFromPath("/Users/G_Laza/Desktop/mushroom.ico") );
+    this->sensor_button->setObjectName("sensorButton");
+    this->sensor_button->setCheckable(true);
 
-    QPushButton * second_button = createLeftPanelPushButton("Controller", getIconFromPath("/Users/G_Laza/Desktop/mushroom.ico") );
-    second_button->setObjectName("controllerButton");
+    this->controller_button = createLeftPanelPushButton("Controller", getIconFromPath("/Users/G_Laza/Desktop/mushroom.ico") );
+    this->controller_button->setObjectName("controllerButton");
+    this->controller_button->setCheckable(true);
 
     QPushButton * third_button = createLeftPanelPushButton("Analysis", getIconFromPath("/Users/G_Laza/Desktop/mushroom.ico") );
     third_button->setObjectName("analysisButton");
+    third_button->setDisabled(true);
 
     QPushButton * forth_button = createLeftPanelPushButton("Kyriakos button", getIconFromPath("/Users/G_Laza/Desktop/mushroom.ico") );
     forth_button->setObjectName("kyrbutton");
-
-    connect(first_button, SIGNAL( clicked() ), this->central_widget, SLOT(setCurrentIndex(Sensor)));
-    connect(second_button, SIGNAL( clicked() ), this->central_widget, SLOT(setCurrentIndex(Controller)));
+    forth_button->setDisabled(true);
 
     QVBoxLayout * left_layout_for_buttons = new QVBoxLayout();
-    left_layout_for_buttons->addWidget(first_button, 0, Qt::AlignTop);
-    left_layout_for_buttons->addWidget(second_button, 0, Qt::AlignTop);
+    left_layout_for_buttons->addWidget(sensor_button, 0, Qt::AlignTop);
+    left_layout_for_buttons->addWidget(controller_button, 0, Qt::AlignTop);
     left_layout_for_buttons->addWidget(third_button, 0, Qt::AlignTop);
     left_layout_for_buttons->addWidget(forth_button, 0, Qt::AlignTop);
     left_layout_for_buttons->setSpacing(10);
@@ -131,7 +169,7 @@ QFrame * senseWindow::createLeftLayout()
 
 QFrame * senseWindow::createCentralLayout()
 {
-    this->central_widget = new customStackedWidget(this);
+    this->central_widget = new QStackedWidget(this);
     this->central_widget->addWidget( createSection(Sensor) );
     this->central_widget->addWidget( createSection(Controller) );
 //    this->central_widget->addWidget( createSection(Analysis) );
@@ -276,7 +314,7 @@ QWidget * senseWindow::createSection(const Section & section)
     }
     if ( section == Section::Controller)
     {
-        qDebug() << "I also come in here";
+        qDebug() << "I also come in here?";
         return new controllerwindow(this);
     }
     if ( section == Section::Analysis)

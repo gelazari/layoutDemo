@@ -75,11 +75,18 @@ QAbstractButton[buttonType="leftPanelButton"]:pressed:focus
   color: white;
 }
 
-QAbstractButton[buttonType="leftPanelButton"]:disabled
+QAbstractButton[buttonType="leftPanelButton"]:checked
+{
+  background-color: gray;
+  border: none;
+  color: blue;
+}
+
+/*QAbstractButton[buttonType="leftPanelButton"]:disabled
 {
     color: #cccccc;
     background-color: #cccccc
-}
+}*/
 
 
 QHeaderView[headerType="tableHeader"]:section
