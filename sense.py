@@ -1,6 +1,5 @@
 from PyQt4 import QtCore, QtGui
 
-
 class ItemWrapper(object):
     def __init__(self, i, p):
         self.item = i
@@ -49,6 +48,7 @@ class SenseLayout(QtGui.QLayout):
 
     def setGeometry(self, rect):
         center = None
+        eastWidth = 0
         westWidth = 0
         northHeight = 0
         southHeight = 0
@@ -62,7 +62,7 @@ class SenseLayout(QtGui.QLayout):
 
             if position == SenseLayout.Top:
                 item.setGeometry(QtCore.QRect(rect.x(), northHeight,
-                        rect.width(), item.sizeHint().height()))    
+                        rect.width(), item.sizeHint().height()))
 
                 northHeight += item.geometry().height() + self.spacing()
 
@@ -88,13 +88,13 @@ class SenseLayout(QtGui.QLayout):
 
             if position == SenseLayout.Left:
                 item.setGeometry(QtCore.QRect(rect.x() + westWidth,
-                        northHeight, item.sizeHint().width(), centerHeight))    
+                        northHeight, item.sizeHint().width(), centerHeight))
 
                 westWidth += item.geometry().width() + self.spacing()
 
         if center:
             center.item.setGeometry(QtCore.QRect(westWidth, northHeight,
-                    rect.width() - westWidth, centerHeight))
+                    rect.width() - eastWidth - westWidth, centerHeight))
 
     def sizeHint(self):
         return self.calculateSize(SenseLayout.SizeHint)
@@ -130,34 +130,29 @@ class SenseLayout(QtGui.QLayout):
         return totalSize
 
 
-class Window(QtGui.QMainWindow):
+class Window(QtGui.QWidget):
 
     Sensor, Controller = range(2)
 
     def __init__(self, parent=None):
-        super(Window, self).__init__(parent)
+        super(Window, self).__init__()
 
-        layout = SenseLayout(self)
-        layout.addWidget( self.createCentralFrame(), SenseLayout.Middle)
+
+        central_widget = self.createCentralFrame()
+        top_widget = self.createTopFrame()
+        left_widget = self.createLeftFrame()
+
+        layout = SenseLayout()
+        layout.addWidget( top_widget, SenseLayout.Top )
+        layout.addWidget( left_widget, SenseLayout.Left)
+        layout.addWidget( central_widget, SenseLayout.Middle )
 
         # Because SenseLayout doesn't call its super-class addWidget() it
         # doesn't take ownership of the widgets until setLayout() is called.
         # Therefore we keep a local reference to each label to prevent it being
         # garbage collected too soon.
 
-        #label_n = self.createLabel("North")
-        #layout.addWidget(label_n, SenseLayout.Top)
-        #
-        #label_w = self.createLabel("West")
-        #layout.addWidget(label_w, SenseLayout.Left)
-        #
-        # label_s = self.createLabel("South")
-        # layout.addWidget(label_s, SenseLayout.Bottom)
-
-        central_widget = QtGui.QWidget()
-        central_widget.setLayout(layout)
-
-        self.setCentralWidget(central_widget)
+        self.setLayout(layout)
 
         self.setWindowTitle("Sense Demo")
 
@@ -270,11 +265,17 @@ class Window(QtGui.QMainWindow):
         table.resizeRowsToContents()
 
         header = table.horizontalHeader()
+        header.setResizeMode(1, QtGui.QHeaderView.Stretch)
+        header.setResizeMode(2, QtGui.QHeaderView.Stretch)
+        header.setResizeMode(3, QtGui.QHeaderView.Stretch)
+        header.setResizeMode(4, QtGui.QHeaderView.Stretch)
+        header.setResizeMode(5, QtGui.QHeaderView.Stretch)
+
         #header.setSectionResizeMode(QtGui.QHeaderView.Stretch)
 
         table.setHorizontalHeader(header)
 
-        central_widget_layout = QtGui.QHBoxLayout()
+        central_widget_layout = QtGui.QVBoxLayout()
         central_widget_layout.addWidget(central_widget)
         central_widget_layout.addWidget( self.createSimulationSummaryFrame() )
         central_widget_layout.setSpacing(0)
@@ -301,6 +302,74 @@ class Window(QtGui.QMainWindow):
 
         return simulation_summary_frame
 
+    def createTopFrame(self):
+        open_button = QtGui.QPushButton("Open")
+        open_button.setObjectName("openButton")
+        open_button.setIcon( QtGui.QIcon(r'/Users/G_Laza/Desktop/mushroom.ico'))
+        open_button.setIconSize( QtCore.QSize(56,56))
+        #open_button.setFixedWidth(200)
+
+        save_button = QtGui.QPushButton("Save")
+        save_button.setObjectName("saveButton")
+        save_button.setIcon( QtGui.QIcon(r'/Users/G_Laza/Desktop/mushroom.ico'))
+        save_button.setIconSize( QtCore.QSize(56,56))
+        #save_button.setFixedWidth(200)
+
+        top_layout = QtGui.QHBoxLayout()
+        top_layout.addWidget(open_button, 0 , QtCore.Qt.AlignLeft)
+        top_layout.addWidget(save_button, 0 , QtCore.Qt.AlignLeft)
+        top_layout.setContentsMargins(0,0,0,0)
+        top_layout.setSpacing(10)
+        top_layout.addStretch(0)
+        top_layout.setMargin(0)
+
+        top_frame = QtGui.QFrame()
+        top_frame.setLayout(top_layout)
+        top_frame.setContentsMargins(0,0,0,0)
+
+        return top_frame
+
+    def createLeftFrame(self):
+        controller_button = QtGui.QPushButton("Controller")
+        controller_button.setObjectName("controllerButton")
+        controller_button.setIcon(QtGui.QIcon(r'/Users/G_Laza/Desktop/mushroom.ico'))
+        controller_button.setIconSize(QtCore.QSize(56, 56))
+        # controller_button.setFixedWidth(200)
+
+        sensor_button = QtGui.QPushButton("Sensor")
+        sensor_button.setObjectName("sensorButton")
+        sensor_button.setIcon(QtGui.QIcon(r'/Users/G_Laza/Desktop/mushroom.ico'))
+        sensor_button.setIconSize(QtCore.QSize(56, 56))
+        # sensor_button.setFixedWidth(200)
+
+        analysis_button = QtGui.QPushButton("Analysis")
+        analysis_button.setObjectName("analysisButton")
+        analysis_button.setIcon(QtGui.QIcon(r'/Users/G_Laza/Desktop/mushroom.ico'))
+        analysis_button.setIconSize(QtCore.QSize(56, 56))
+        # analysis_button.setFixedWidth(200)
+
+        stackup_button = QtGui.QPushButton("StackUp")
+        stackup_button.setObjectName("stackupButton")
+        stackup_button.setIcon(QtGui.QIcon(r'/Users/G_Laza/Desktop/mushroom.ico'))
+        stackup_button.setIconSize(QtCore.QSize(56, 56))
+        # stackup_button.setFixedWidth(200)
+
+        left_layout = QtGui.QVBoxLayout()
+        left_layout.addWidget(controller_button, 0, QtCore.Qt.AlignTop)
+        left_layout.addWidget(sensor_button, 0, QtCore.Qt.AlignTop)
+        left_layout.addWidget(analysis_button, 0, QtCore.Qt.AlignTop)
+        left_layout.addWidget(stackup_button, 0, QtCore.Qt.AlignTop)
+        left_layout.setContentsMargins(0, 0, 0, 0)
+        left_layout.setSpacing(10)
+        left_layout.addStretch(0)
+        left_layout.setMargin(0)
+
+        left_frame = QtGui.QFrame()
+        left_frame.setLayout(left_layout)
+        left_frame.setFixedWidth(200)
+        left_frame.setContentsMargins(0, 0, 0, 0)
+
+        return left_frame
 
 class CustomTableWidget(QtGui.QTableWidget):
     def __init__(self):
@@ -320,6 +389,10 @@ if __name__ == '__main__':
 
     app = QtGui.QApplication(sys.argv)
     window = Window()
+    qss_file = './style.qss'
+    with open(qss_file, "r") as fh:
+        print(fh.read())
+        window.setStyleSheet(fh.read())
     window.resize(QtGui.QApplication.desktop().size())
     window.show()
     sys.exit(app.exec_())   
