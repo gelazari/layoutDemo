@@ -134,10 +134,18 @@ class Window(QtGui.QWidget):
 
     Sensor, Controller = range(2)
 
+    sectionChanged = QtCore.pyqtSignal(int, name='sectionChanged')
+
     def __init__(self, parent=None):
         super(Window, self).__init__()
 
+        _central_stacked_widget = 0
 
+
+        # Because SenseLayout doesn't call its super-class addWidget() it
+        # doesn't take ownership of the widgets until setLayout() is called.
+        # Therefore we keep a local reference to each label to prevent it being
+        # garbage collected too soon.
         central_widget = self.createCentralFrame()
         top_widget = self.createTopFrame()
         left_widget = self.createLeftFrame()
@@ -147,14 +155,15 @@ class Window(QtGui.QWidget):
         layout.addWidget( left_widget, SenseLayout.Left)
         layout.addWidget( central_widget, SenseLayout.Middle )
 
-        # Because SenseLayout doesn't call its super-class addWidget() it
-        # doesn't take ownership of the widgets until setLayout() is called.
-        # Therefore we keep a local reference to each label to prevent it being
-        # garbage collected too soon.
-
         self.setLayout(layout)
-
         self.setWindowTitle("Sense Demo")
+
+    @QtCore.pyqtSlot(int, name='changeSection')
+    def changeSection(self, section):
+        if section == Window.Sensor:
+            self._central_widget.setCurrentIndex(section)
+        if section == Window.Controller:
+            self._central_widget.setCurrentIndex(section)
 
     def createLabel(self, text):
         label = QtGui.QLabel(text)
@@ -202,7 +211,6 @@ class Window(QtGui.QWidget):
         controller_section_layout.addWidget(sub_controller_frame)
 
         controller_frame = QtGui.QFrame(self)
-        controller_frame.setFixedWidth(150)
         controller_frame.setLayout(controller_section_layout)
         controller_frame.setStyleSheet("QFrame { background-color: grey }")
 
@@ -221,14 +229,14 @@ class Window(QtGui.QWidget):
         item.setFlags(QtCore.Qt.NoItemFlags)
         item.setFlags(item.flags() ^ QtCore.Qt.ItemIsEditable)
         item.setForeground( QtGui.QColor.fromRgb(0,0,0) )
-        item.setTextAlignment(QtCore.Qt.AlignLeft)
+        item.setTextAlignment(QtCore.Qt.AlignCenter)
 
         return item
 
     def createCentralFrame(self):
-        central_widget = QtGui.QStackedWidget()
-        central_widget.addWidget(self.createSection(Window.Sensor))
-        central_widget.addWidget(self.createSection(Window.Controller))
+        self._central_widget = QtGui.QStackedWidget()
+        self._central_widget.addWidget(self.createSection(Window.Sensor))
+        self._central_widget.addWidget(self.createSection(Window.Controller))
 
         table = CustomTableWidget()
         table_item = QtGui.QTableWidgetItem()
@@ -263,6 +271,7 @@ class Window(QtGui.QWidget):
         table.verticalHeader().setVisible(False)
         table.resizeColumnsToContents()
         table.resizeRowsToContents()
+        table.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
 
         header = table.horizontalHeader()
         header.setResizeMode(1, QtGui.QHeaderView.Stretch)
@@ -276,7 +285,7 @@ class Window(QtGui.QWidget):
         table.setHorizontalHeader(header)
 
         central_widget_layout = QtGui.QVBoxLayout()
-        central_widget_layout.addWidget(central_widget)
+        central_widget_layout.addWidget(self._central_widget)
         central_widget_layout.addWidget( self.createSimulationSummaryFrame() )
         central_widget_layout.setSpacing(0)
         central_widget_layout.setMargin(0)
@@ -291,7 +300,7 @@ class Window(QtGui.QWidget):
     def createSimulationSummaryFrame(self):
         simulation_summary_label = QtGui.QLabel("Simulation Summary")
         simulation_summary_label.setFrameStyle(QtGui.QFrame.NoFrame)
-        simulation_summary_label.setProperty("frameType", 'simulationSummaryLabel')
+        simulation_summary_label.setProperty("labelType", "simulationSummaryLabel")
 
         simulation_summary_layout = QtGui.QHBoxLayout()
         simulation_summary_layout.addWidget(simulation_summary_label, 0, QtCore.Qt.AlignCenter)
@@ -307,6 +316,7 @@ class Window(QtGui.QWidget):
         open_button.setObjectName("openButton")
         open_button.setIcon( QtGui.QIcon(r'/Users/G_Laza/Desktop/mushroom.ico'))
         open_button.setIconSize( QtCore.QSize(56,56))
+        open_button.setProperty("buttonType", "topPanelButton")
         #open_button.setFixedWidth(200)
 
         save_button = QtGui.QPushButton("Save")
@@ -334,23 +344,30 @@ class Window(QtGui.QWidget):
         controller_button.setObjectName("controllerButton")
         controller_button.setIcon(QtGui.QIcon(r'/Users/G_Laza/Desktop/mushroom.ico'))
         controller_button.setIconSize(QtCore.QSize(56, 56))
+        controller_button.setCheckable(True)
+       # controller_button.clicked().connect(self.sectionChanged(0))
+        controller_button.clicked.connect(lambda: self.changeSection(Window.Controller))
         # controller_button.setFixedWidth(200)
 
         sensor_button = QtGui.QPushButton("Sensor")
         sensor_button.setObjectName("sensorButton")
         sensor_button.setIcon(QtGui.QIcon(r'/Users/G_Laza/Desktop/mushroom.ico'))
         sensor_button.setIconSize(QtCore.QSize(56, 56))
+        sensor_button.setCheckable(True)
+        sensor_button.clicked.connect(lambda: self.changeSection(Window.Sensor))
         # sensor_button.setFixedWidth(200)
 
         analysis_button = QtGui.QPushButton("Analysis")
         analysis_button.setObjectName("analysisButton")
         analysis_button.setIcon(QtGui.QIcon(r'/Users/G_Laza/Desktop/mushroom.ico'))
+        analysis_button.setCheckable(True)
         analysis_button.setIconSize(QtCore.QSize(56, 56))
         # analysis_button.setFixedWidth(200)
 
         stackup_button = QtGui.QPushButton("StackUp")
         stackup_button.setObjectName("stackupButton")
         stackup_button.setIcon(QtGui.QIcon(r'/Users/G_Laza/Desktop/mushroom.ico'))
+        stackup_button.setCheckable(True)
         stackup_button.setIconSize(QtCore.QSize(56, 56))
         # stackup_button.setFixedWidth(200)
 
@@ -368,6 +385,13 @@ class Window(QtGui.QWidget):
         left_frame.setLayout(left_layout)
         left_frame.setFixedWidth(200)
         left_frame.setContentsMargins(0, 0, 0, 0)
+
+        button_group = QtGui.QButtonGroup(left_frame)
+        button_group.addButton(controller_button)
+        button_group.addButton(sensor_button)
+        button_group.addButton(analysis_button)
+        button_group.addButton(stackup_button)
+        button_group.setExclusive(True)
 
         return left_frame
 
@@ -391,8 +415,10 @@ if __name__ == '__main__':
     window = Window()
     qss_file = './style.qss'
     with open(qss_file, "r") as fh:
-        print(fh.read())
         window.setStyleSheet(fh.read())
+    window.style().unpolish(window)
+    window.style().polish(window)
+    window.update()
     window.resize(QtGui.QApplication.desktop().size())
     window.show()
     sys.exit(app.exec_())   
