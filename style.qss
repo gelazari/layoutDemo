@@ -155,7 +155,7 @@ QAbstractButton[buttonType="topFrameButton"]
     border: none;
     color: #ededed;
     padding-left: 8px;
-    padding-right: 8px;
+    padding-left: 8px;
 }
 
 QAbstractButton[buttonType="topFrameButton"]:hover
