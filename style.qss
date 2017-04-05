@@ -100,19 +100,19 @@ QHeaderView[headerType="tableHeader"]:section
 
 QLabel[labelType="simulationSummaryLabel"]
 {
-border: 0px;
-background-color: white;
-color: black;
-padding: 3px;
-font: bold 16px;
+    border: 0px;
+    background-color: white;
+    color: black;
+    padding: 3px;
+    font: bold 16px;
 }
 
 QFrame[frameType="simulationSummaryFrame"]
 {
-border: 0px;
-background-color: white;
-color: black;
-padding: 3px;
+    border: 0px;
+    background-color: white;
+    color: black;
+    padding: 3px;
 }
 
 QFrame[frameType="topFrame"]
@@ -138,11 +138,27 @@ QAbstractButton[buttonType="leftFrameButton"]
     background-color: rgba(0,0,0,0);
     border: none;
     color: #ededed;
+        padding: 4px;
+
 }
 
 QAbstractButton[buttonType="leftFrameButton"]:hover
 {
     background-color: rgba(255,255,255,30);
     border-left: 4px solid #3c267a;
-    padding-right: 4px;
+    padding-right: 8px; /* Fix border displacement */
+}
+
+QAbstractButton[buttonType="topFrameButton"]
+{
+    background-color: rgba(0,0,0,0);
+    border: none;
+    color: #ededed;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+QAbstractButton[buttonType="topFrameButton"]:hover
+{
+    background-color: rgba(255,255,255,30);
 }
