@@ -151,6 +151,7 @@ class Window(QtGui.QWidget):
         left_widget = self.createLeftFrame()
 
         layout = SenseLayout()
+        layout.setSpacing(0)
         layout.addWidget( top_widget, SenseLayout.Top )
         layout.addWidget( left_widget, SenseLayout.Left)
         layout.addWidget( central_widget, SenseLayout.Middle )
@@ -372,6 +373,7 @@ class Window(QtGui.QWidget):
         self._central_widget = QtGui.QStackedWidget()
         self._central_widget.addWidget(self.createSection(Window.Sensor))
         self._central_widget.addWidget(self.createSection(Window.Controller))
+        self._central_widget.setProperty("widgetType", "centralWidget")
 
         table = CustomTableWidget()
         table_item = QtGui.QTableWidgetItem()
@@ -452,7 +454,8 @@ class Window(QtGui.QWidget):
         open_button.setIcon( QtGui.QIcon(r'/Users/G_Laza/Desktop/mushroom.ico'))
         open_button.setIconSize( QtCore.QSize(56,56))
         open_button.setProperty("buttonType", "topPanelButton")
-        #open_button.setFixedWidth(200)
+        open_button.setFixedWidth(175)
+        open_button.setFixedHeight(150)
 
         save_button = QtGui.QPushButton("Save")
         save_button.setObjectName("saveButton")
@@ -471,11 +474,15 @@ class Window(QtGui.QWidget):
         top_frame = QtGui.QFrame()
         top_frame.setLayout(top_layout)
         top_frame.setContentsMargins(0,0,0,0)
+        top_frame.setProperty("frameType", "topFrame")
+
+        top_frame.setFixedHeight(100)
 
         return top_frame
 
     def createLeftFrame(self):
         controller_button = QtGui.QPushButton("Controller")
+        controller_button.setProperty("buttonType", "leftFrameButton")
         controller_button.setObjectName("controllerButton")
         controller_button.setIcon(QtGui.QIcon(r'/Users/G_Laza/Desktop/mushroom.ico'))
         controller_button.setIconSize(QtCore.QSize(56, 56))
@@ -485,6 +492,7 @@ class Window(QtGui.QWidget):
         # controller_button.setFixedWidth(200)
 
         sensor_button = QtGui.QPushButton("Sensor")
+        sensor_button.setProperty("buttonType", "leftFrameButton")
         sensor_button.setObjectName("sensorButton")
         sensor_button.setIcon(QtGui.QIcon(r'/Users/G_Laza/Desktop/mushroom.ico'))
         sensor_button.setIconSize(QtCore.QSize(56, 56))
@@ -493,6 +501,7 @@ class Window(QtGui.QWidget):
         # sensor_button.setFixedWidth(200)
 
         analysis_button = QtGui.QPushButton("Analysis")
+        analysis_button.setProperty("buttonType", "leftFrameButton")
         analysis_button.setObjectName("analysisButton")
         analysis_button.setIcon(QtGui.QIcon(r'/Users/G_Laza/Desktop/mushroom.ico'))
         analysis_button.setCheckable(True)
@@ -500,6 +509,7 @@ class Window(QtGui.QWidget):
         # analysis_button.setFixedWidth(200)
 
         stackup_button = QtGui.QPushButton("StackUp")
+        stackup_button.setProperty("buttonType", "leftFrameButton")
         stackup_button.setObjectName("stackupButton")
         stackup_button.setIcon(QtGui.QIcon(r'/Users/G_Laza/Desktop/mushroom.ico'))
         stackup_button.setCheckable(True)
@@ -518,8 +528,9 @@ class Window(QtGui.QWidget):
 
         left_frame = QtGui.QFrame()
         left_frame.setLayout(left_layout)
-        left_frame.setFixedWidth(200)
+        left_frame.setFixedWidth(175)
         left_frame.setContentsMargins(0, 0, 0, 0)
+        left_frame.setProperty("frameType", "leftFrame")
 
         button_group = QtGui.QButtonGroup(left_frame)
         button_group.addButton(controller_button)
@@ -556,4 +567,6 @@ if __name__ == '__main__':
     window.update()
     window.resize(QtGui.QApplication.desktop().size())
     window.show()
-    sys.exit(app.exec_())   
+    sys.exit(app.exec_())
+
+    #Left color: 17202b

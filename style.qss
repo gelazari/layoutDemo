@@ -4,7 +4,6 @@ QAbstractButton[buttonType="topPanelButton"]
     border-width: 0px;
     border-radius: 0px;
     font: bold 14px;
-    min-width: 10em;
     padding: 0px;
 }
 
@@ -114,4 +113,36 @@ border: 0px;
 background-color: white;
 color: black;
 padding: 3px;
+}
+
+QFrame[frameType="topFrame"]
+{
+    background-color: #17202b;
+    color: #ededed;
+}
+
+QFrame[frameType="leftFrame"]
+{
+    background-color: #17202b;
+    color: #ededed;
+    padding-top: 2em;
+}
+
+QWidget[widgetType="centralWidget"]
+{
+    padding: 10px;
+}
+
+QAbstractButton[buttonType="leftFrameButton"]
+{
+    background-color: rgba(0,0,0,0);
+    border: none;
+    color: #ededed;
+}
+
+QAbstractButton[buttonType="leftFrameButton"]:hover
+{
+    background-color: rgba(255,255,255,30);
+    border-left: 4px solid #3c267a;
+    padding-right: 4px;
 }
