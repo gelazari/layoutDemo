@@ -1,0 +1,117 @@
+QAbstractButton[buttonType="topPanelButton"]
+{
+    background-color: black;
+    border-width: 0px;
+    border-radius: 0px;
+    font: bold 14px;
+    min-width: 10em;
+    padding: 0px;
+}
+
+QAbstractButton[buttonType="topPanelButton"]:focus
+{
+  background-color: black;
+  border: none;
+  color: white;
+  padding: 3px 20px;
+}
+
+
+QAbstractButton[buttonType="topPanelButton"]:hover,
+QAbstractButton[buttonType="topPanelButton"]:hover:focus
+{
+  background-color: #2196f3;
+  border-color: #ffffff;
+}
+
+
+QAbstractButton[buttonType="topPanelButton"]:pressed,
+QAbstractButton[buttonType="topPanelButton"]:pressed:focus
+{
+  background-color: #f50057;
+  border: none;
+  color: white;
+}
+
+QAbstractButton[buttonType="topPanelButton"]:disabled
+{
+    color: #cccccc;
+    background-color: #cccccc
+}
+
+QAbstractButton[buttonType="leftPanelButton"]
+{
+    background-color: red;
+    border-width: 0px;
+    border-radius: 0px;
+    border-color: beige;
+    font: bold 14px;
+    min-width: 10em;
+    padding: 0px;
+}
+
+QAbstractButton[buttonType="leftPanelButton"]:focus
+{
+  background-color: black;
+  border: none;
+  color: white;
+  padding: 3px 20px;
+}
+
+
+QAbstractButton[buttonType="leftPanelButton"]:hover,
+QAbstractButton[buttonType="leftPanelButton"]:hover:focus
+{
+  background-color: #2196f3;
+  border-color: #ffffff;
+}
+
+
+QAbstractButton[buttonType="leftPanelButton"]:pressed,
+QAbstractButton[buttonType="leftPanelButton"]:pressed:focus
+{
+  background-color: #f50057;
+  border: none;
+  color: white;
+}
+
+QAbstractButton[buttonType="leftPanelButton"]:checked
+{
+  background-color: gray;
+  border: none;
+  color: blue;
+}
+
+/*QAbstractButton[buttonType="leftPanelButton"]:disabled
+{
+    color: #cccccc;
+    background-color: #cccccc
+}*/
+
+
+QHeaderView[headerType="tableHeader"]:section
+{
+    background-color: white;
+    color: black;
+    border: 0px;
+    font: bold 12px;
+    min-height: 20px;
+    padding-bottom: 10px;
+}
+
+QLabel[labelType="simulationSummaryLabel"]
+{
+border: 0px;
+background-color: white;
+color: black;
+padding: 3px;
+font: bold 16px;
+}
+
+QFrame[frameType="simulationSummaryFrame"]
+{
+border: 0px;
+background-color: white;
+color: black;
+padding: 3px;
+}
