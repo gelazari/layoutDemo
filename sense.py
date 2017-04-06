@@ -232,44 +232,7 @@ class Window(QtGui.QWidget):
         return controller_frame
 
     def createNewControllerDialog(self):
-        dialog = QtGui.QDialog()
-        form_layout = QtGui.QFormLayout()
-
-        pf_label1 = QtGui.QLabel("pF")
-        pf_label2 = QtGui.QLabel("pF")
-        pf_label3 = QtGui.QLabel("pF")
-
-        company_line = QtGui.QLineEdit()
-        product_line = QtGui.QLineEdit()
-
-        cmin_line = QtGui.QHBoxLayout()
-        cmin_line.addWidget(QtGui.QLineEdit())
-        cmin_line.addWidget(pf_label1)
-
-        cmax_line = QtGui.QHBoxLayout()
-        cmax_line.addWidget(QtGui.QLineEdit())
-        cmax_line.addWidget(pf_label2)
-
-        sensitivity_line = QtGui.QHBoxLayout()
-        sensitivity_line.addWidget(QtGui.QLineEdit())
-        sensitivity_line.addWidget(pf_label3)
-
-        bits_of_adc_spinner = QtGui.QSpinBox()
-        x_electrodes_spinner = QtGui.QSpinBox()
-        y_electrodes_spinner = QtGui.QSpinBox()
-
-        form_layout.addRow("Company", company_line)
-        form_layout.addRow("Product", product_line)
-        form_layout.addRow("Cmin", cmin_line)
-        form_layout.addRow("Cmax", cmax_line)
-        form_layout.addRow("Sensitivity", sensitivity_line)
-        form_layout.addRow("Bits of ADC", bits_of_adc_spinner)
-        form_layout.addRow("X Electrodes", x_electrodes_spinner)
-        form_layout.addRow("Y Electrodes", y_electrodes_spinner)
-
-        dialog.setLayout(form_layout)
-        dialog.setWindowTitle("New Controller")
-
+        dialog = NewControllerDialog("New Controller", self)
         return dialog
 
     def createControllerComboBox(self):
@@ -615,8 +578,10 @@ class Window(QtGui.QWidget):
         button_group = QtGui.QButtonGroup(left_frame)
         button_group.addButton(controller_button)
         button_group.addButton(sensor_button)
-        button_group.addButton(analysis_button)
+        button_group.addButton(pattern_button)
         button_group.addButton(stackup_button)
+        button_group.addButton(traces_button)
+        button_group.addButton(analysis_button)
         button_group.setExclusive(True)
 
         return left_frame
@@ -632,6 +597,164 @@ class CustomTableWidget(QtGui.QTableWidget):
     def editItem(self, QTableWidgetItem):
         # do nothing
         return
+
+class NewControllerDialog(QtGui.QDialog):
+    def __init__(self, title, parent=None):
+        super(NewControllerDialog, self).__init__(parent)
+
+        top_frame = self.createTopFrame()
+        bot_frame = self.createBotFrame()
+
+        top_level_layout = QtGui.QVBoxLayout()
+        top_level_layout.setSpacing(0)
+        top_level_layout.setMargin(0)
+
+        top_level_layout.addWidget(top_frame)
+        top_level_layout.addWidget(bot_frame)
+
+        self.setWindowTitle(title)
+        self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        self.setLayout(top_level_layout)
+
+    def createTopFrame(self):
+
+        top_frame = QtGui.QFrame(self)
+        top_frame_layout = QtGui.QVBoxLayout()
+        top_frame.setFixedHeight(200)
+
+        img = QtGui.QLabel()
+        img.setPixmap(QtGui.QPixmap("./images/new_controller.png"))
+
+        nc_bold_label = QtGui.QLabel("New Controller")
+        nc_bold_label.setProperty("labelType","newControllerLabel")
+
+        info_label = QtGui.QLabel("Insert your specs. You will be able to edit or delete your controller once created.")
+        info_label.setAlignment(QtCore.Qt.AlignCenter)
+        info_label.setProperty("labelType", "newControllerInfoLabel")
+        info_label.setWordWrap(True)
+
+        top_frame_layout.addWidget(img, 0, QtCore.Qt.AlignTop | QtCore.Qt.AlignHCenter)
+        top_frame_layout.addWidget(nc_bold_label, 0, QtCore.Qt.AlignTop | QtCore.Qt.AlignHCenter)
+        top_frame_layout.addWidget(info_label, 0, QtCore.Qt.AlignTop | QtCore.Qt.AlignHCenter)
+        top_frame.setLayout(top_frame_layout)
+
+        top_frame.setStyleSheet("background-color: #ededed;")
+
+        return top_frame
+
+    def createBotFrame(self):
+        bot_frame = QtGui.QFrame(self)
+        bot_frame.setStyleSheet("background-color: #ffffff;")
+
+        bot_frame_layout = QtGui.QHBoxLayout()
+
+        general_label = QtGui.QLabel("GENERAL")
+        empty_label = QtGui.QLabel(" ")
+        company_label = QtGui.QLabel("Company")
+        product_label = QtGui.QLabel("Product")
+
+        technical_label = QtGui.QLabel("TECHNICAL")
+        cmin_label = QtGui.QLabel("C min")
+        cmax_label = QtGui.QLabel("C max ")
+
+        electrodes_label = QtGui.QLabel("ELECTRODES")
+        x_electrodes_label = QtGui.QLabel("x Electrodes")
+        y_electrodes_label = QtGui.QLabel("y Electrodes")
+
+        sensitivity_label = QtGui.QLabel("Sensitivity")
+        bits_of_adc_label = QtGui.QLabel("Bits of ADC")
+
+        company_label.setProperty("labelType", "fieldLabel")
+        product_label.setProperty("labelType", "fieldLabel")
+        cmin_label.setProperty("labelType", "fieldLabel")
+        cmax_label.setProperty("labelType", "fieldLabel")
+        x_electrodes_label.setProperty("labelType", "fieldLabel")
+        y_electrodes_label.setProperty("labelType", "fieldLabel")
+        sensitivity_label.setProperty("labelType", "fieldLabel")
+        bits_of_adc_label.setProperty("labelType", "fieldLabel")
+
+        general_label.setProperty("labelType", "sectionLabel")
+        technical_label.setProperty("labelType", "sectionLabel")
+        electrodes_label.setProperty("labelType", "sectionLabel")
+        empty_label.setProperty("labelType", "sectionLabel")
+
+        cmin_pf_label = QtGui.QLabel("pF")
+        cmax_pf_label = QtGui.QLabel("pF")
+        sensitivity_pf_label = QtGui.QLabel("pF")
+        cmin_pf_label.setProperty("labelType", "pfLabel")
+        cmax_pf_label.setProperty("labelType", "pfLabel")
+        sensitivity_pf_label.setProperty("labelType", "pfLabel")
+
+        company_field = QtGui.QLineEdit()
+        product_field = QtGui.QLineEdit()
+        cmin_field = QtGui.QLineEdit()
+        cmax_field = QtGui.QLineEdit()
+        x_electrodes_field = QtGui.QLineEdit()
+        y_electrodes_field = QtGui.QLineEdit()
+        sensitivity_field = QtGui.QLineEdit()
+        bits_of_adc_field = QtGui.QLineEdit()
+
+        company_field.setFixedHeight(24)
+        product_field.setFixedHeight(24)
+        cmin_field.setFixedHeight(24)
+        cmax_field.setFixedHeight(24)
+        x_electrodes_field.setFixedHeight(24)
+        y_electrodes_field.setFixedHeight(24)
+        sensitivity_field.setFixedHeight(24)
+        bits_of_adc_field.setFixedHeight(24)
+
+        company_field.setProperty("fieldType", "lineEdit")
+        product_field.setProperty("fieldType", "lineEdit")
+        cmin_field.setProperty("fieldType", "lineEdit")
+        cmax_field.setProperty("fieldType", "lineEdit")
+        x_electrodes_field.setProperty("fieldType", "lineEdit")
+        y_electrodes_field.setProperty("fieldType", "lineEdit")
+        sensitivity_field.setProperty("fieldType", "lineEdit")
+        bits_of_adc_field.setProperty("fieldType", "lineEdit")
+
+        cmin_layout = QtGui.QHBoxLayout()
+        cmax_layout = QtGui.QHBoxLayout()
+        sensitivity_layout = QtGui.QHBoxLayout()
+
+        cmin_layout.addWidget(cmin_field)
+        cmin_layout.addWidget(cmin_pf_label)
+        cmax_layout.addWidget(cmax_field)
+        cmax_layout.addWidget(cmax_pf_label)
+        sensitivity_layout.addWidget(sensitivity_field)
+        sensitivity_layout.addWidget(sensitivity_pf_label)
+
+        sensitivity_border_label = QtGui.QLabel()
+        sensitivity_border_label.setProperty("labelType", "ncBorderLabel")
+        sensitivity_border_label.setFixedHeight(8)
+
+        bits_of_adc_border_label = QtGui.QLabel()
+        bits_of_adc_border_label.setProperty("labelType", "ncBorderLabel")
+        bits_of_adc_border_label.setFixedHeight(8)
+
+        left_row = QtGui.QFormLayout()
+        right_row = QtGui.QFormLayout()
+
+        left_row.addRow(general_label)
+        left_row.addRow(company_label, company_field)
+        left_row.addRow(technical_label)
+        left_row.addRow(cmin_label, cmin_layout)
+        left_row.addRow(cmax_label, cmax_layout)
+        left_row.addRow(sensitivity_border_label)
+        left_row.addRow(sensitivity_label, sensitivity_layout)
+
+        right_row.addRow(empty_label)
+        right_row.addRow(product_label, product_field)
+        right_row.addRow(electrodes_label)
+        right_row.addRow(x_electrodes_label, x_electrodes_field)
+        right_row.addRow(y_electrodes_label, y_electrodes_field)
+        right_row.addRow(bits_of_adc_border_label)
+        right_row.addRow(bits_of_adc_label, bits_of_adc_field)
+
+        bot_frame_layout.addLayout(left_row, 2)
+        bot_frame_layout.addLayout(right_row, 2)
+        bot_frame.setLayout(bot_frame_layout)
+
+        return bot_frame
 
 if __name__ == '__main__':
 

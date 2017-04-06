@@ -119,6 +119,41 @@ QLabel[labelType="bottomLabel"]
     font-size: 10px;
 }
 
+QLabel[labelType="pfLabel"]
+{
+    color: #000000;
+    font: bold 12px;
+    padding-right: 12px;
+}
+
+QLabel[labelType="fieldLabel"]
+{
+    color: #000000;
+    font: bold 12px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+QLabel[labelType="sectionLabel"]
+{
+    color: #aaaaaa;
+    font: bold 12px;
+    margin-top: 8px;
+    margin-bottom: 4px;
+}
+
+QLabel[labelType="newControllerLabel"]
+{
+    color: 000000;
+    font: bold 16px;
+}
+
+QLabel[labelType="newControllerInfoLabel"]
+{
+    color: #666666;
+    font: bold 14px;
+}
+
 QFrame[frameType="simulationSummaryFrame"]
 {
     border: 0px;
@@ -214,4 +249,16 @@ QAbstractButton[buttonType="bottomLeftButton"]
     color: #ededed;
     background-color: rgba(0,0,0,0);
     font-size: 12px;
+}
+
+QLineEdit[fieldType="lineEdit"]
+{
+    padding: 0 8px;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+}
+
+QLabel[labelType="ncBorderLabel"]
+{
+    border: 4px solid #6533AC;
 }
