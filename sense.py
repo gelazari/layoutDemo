@@ -460,7 +460,7 @@ class Window(QtGui.QWidget):
         button.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
         button.setText(text)
         button.setIcon(QtGui.QIcon("./images/top_buttons/identity.svg"))
-        button.setIconSize(QtCore.QSize(32, 32))
+        button.setIconSize(QtCore.QSize(24, 24))
         button.setProperty("buttonType", "identityButton")
         button.setObjectName("identityButton")
 
@@ -473,7 +473,7 @@ class Window(QtGui.QWidget):
         button.setProperty("buttonType", "topFrameButton")
         button.setObjectName(text+"Button")
         button.setIcon(QtGui.QIcon(img))
-        button.setIconSize(QtCore.QSize(32, 32))
+        button.setIconSize(QtCore.QSize(24, 24))
         button.setFixedHeight(100)
 
         return button
@@ -556,7 +556,7 @@ class Window(QtGui.QWidget):
         button.setProperty("buttonType", "leftFrameButton")
         button.setObjectName(text+"Button")
         button.setIcon(QtGui.QIcon(img))
-        button.setIconSize(QtCore.QSize(32, 32))
+        button.setIconSize(QtCore.QSize(24, 24))
         button.setCheckable(True)
         button.clicked.connect(lambda: self.changeSection(onclick_section))
         button.setFixedWidth(175)
