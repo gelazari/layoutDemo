@@ -448,6 +448,18 @@ class Window(QtGui.QWidget):
 
         return simulation_summary_frame
 
+    def createTopFrameButton(self, text, img):
+        button = QtGui.QToolButton()
+        button.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
+        button.setText(text)
+        button.setProperty("buttonType", "topFrameButton")
+        button.setObjectName(text+"Button")
+        button.setIcon(QtGui.QIcon(img))
+        button.setIconSize(QtCore.QSize(32, 32))
+        button.setFixedHeight(100)
+
+        return button
+
     def createTopFrame(self):
         logo_button = QtGui.QPushButton("Logo")
         logo_button.setObjectName("logoButton")
@@ -457,50 +469,11 @@ class Window(QtGui.QWidget):
         logo_button.setFixedWidth(175)
         logo_button.setFixedHeight(100)
 
-        open_button = QtGui.QToolButton()
-        open_button.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
-        open_button.setText("Open")
-        open_button.setProperty("buttonType", "topFrameButton")
-        open_button.setObjectName("openButton")
-        open_button.setIcon( QtGui.QIcon(r'./images/top_buttons/open.svg'))
-        open_button.setIconSize( QtCore.QSize(32,32))
-        open_button.setFixedHeight(100)
-
-        save_button = QtGui.QToolButton()
-        save_button.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
-        save_button.setText("Save")
-        save_button.setProperty("buttonType", "topFrameButton")
-        save_button.setObjectName("saveButton")
-        save_button.setIcon( QtGui.QIcon(r'./images/top_buttons/save.svg'))
-        save_button.setIconSize(QtCore.QSize(32, 32))
-        save_button.setFixedHeight(100)
-
-        save_as_button = QtGui.QToolButton()
-        save_as_button.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
-        save_as_button.setText("Save As")
-        save_as_button.setProperty("buttonType", "topFrameButton")
-        save_as_button.setObjectName("saveasButton")
-        save_as_button.setIcon( QtGui.QIcon(r'./images/top_buttons/save.svg'))
-        save_as_button.setIconSize(QtCore.QSize(32, 32))
-        save_as_button.setFixedHeight(100)
-
-        new_button = QtGui.QToolButton()
-        new_button.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
-        new_button.setText("New")
-        new_button.setProperty("buttonType", "topFrameButton")
-        new_button.setObjectName("newButton")
-        new_button.setIcon( QtGui.QIcon(r'./images/top_buttons/new.svg'))
-        new_button.setIconSize(QtCore.QSize(32, 32))
-        new_button.setFixedHeight(100)
-
-        share_button = QtGui.QToolButton()
-        share_button.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
-        share_button.setText("Share")
-        share_button.setProperty("buttonType", "topFrameButton")
-        share_button.setObjectName("shareButton")
-        share_button.setIcon(QtGui.QIcon(r'./images/top_buttons/share.svg'))
-        share_button.setIconSize(QtCore.QSize(32, 32))
-        share_button.setFixedHeight(100)
+        open_button = self.createTopFrameButton("Open", "./images/top_buttons/open.svg")
+        save_button = self.createTopFrameButton("Save", "./images/top_buttons/save.svg")
+        save_as_button = self.createTopFrameButton("Save As", "./images/top_buttons/save.svg")
+        new_button = self.createTopFrameButton("New", "./images/top_buttons/new.svg")
+        share_button = self.createTopFrameButton("Share", "./images/top_buttons/share.svg")
 
         top_layout = QtGui.QHBoxLayout()
         top_layout.addWidget(logo_button, 0, QtCore.Qt.AlignLeft)
@@ -523,68 +496,54 @@ class Window(QtGui.QWidget):
 
         return top_frame
 
+    def createSolveButton(self):
+        button = QtGui.QToolButton()
+        button.setText("Solve")
+        button.setProperty("buttonType", "solveButton")
+
+        button.setFixedWidth(100)
+
+        return button
+
+    def createSolveOnCloudButton(self):
+        button = QtGui.QToolButton()
+        button.setText("Solve on Cloud")
+        button.setProperty("buttonType", "solveOnCloudButton")
+
+        button.setFixedWidth(150)
+
+        return button
+
+    def createLeftFrameButton(self, text, img, onclick_section, spaces = 4):
+        spacePadding = ""
+        for i in range(spaces):
+            spacePadding += " "
+
+        button = QtGui.QToolButton()
+        button.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
+        button.setText(spacePadding+text)
+        button.setProperty("buttonType", "leftFrameButton")
+        button.setObjectName(text+"Button")
+        button.setIcon(QtGui.QIcon(img))
+        button.setIconSize(QtCore.QSize(32, 32))
+        button.setCheckable(True)
+        button.clicked.connect(lambda: self.changeSection(onclick_section))
+        button.setFixedWidth(175)
+
+        return button
+
     def createLeftFrame(self):
-        controller_button = QtGui.QToolButton()
-        controller_button.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
-        controller_button.setText("Controller")
-        controller_button.setProperty("buttonType", "leftFrameButton")
-        controller_button.setObjectName("controllerButton")
-        controller_button.setIcon( QtGui.QIcon(r'./images/left_buttons/controller.svg'))
-        controller_button.setIconSize(QtCore.QSize(32, 32))
-        controller_button.setCheckable(True)
-        controller_button.clicked.connect(lambda: self.changeSection(Window.Controller))
-        controller_button.setFixedWidth(175)
+        controller_button = self.createLeftFrameButton("Controller", "./images/left_buttons/controller.svg", self.Controller)
+        sensor_button = self.createLeftFrameButton("Sensor", "./images/left_buttons/sensor.svg", self.Sensor)
+        pattern_button = self.createLeftFrameButton("Pattern", "./images/left_buttons/pattern.svg", self.Controller)
+        stackup_button = self.createLeftFrameButton("StackUp", "./images/left_buttons/stackup.svg", self.Sensor)
+        traces_button = self.createLeftFrameButton("Traces", "./images/left_buttons/traces.svg", self.Controller)
+        analysis_button = self.createLeftFrameButton("Analysis", "./images/left_buttons/analysis.svg", self.Sensor)
+        solve_button = self.createSolveButton()
+        solve_on_cloud_button = self.createSolveOnCloudButton()
 
-        sensor_button = QtGui.QToolButton()
-        sensor_button.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
-        sensor_button.setText("Sensor")
-        sensor_button.setProperty("buttonType", "leftFrameButton")
-        sensor_button.setObjectName("sensorButton")
-        sensor_button.setIcon( QtGui.QIcon(r'./images/left_buttons/sensor.svg'))
-        sensor_button.setIconSize(QtCore.QSize(32, 32))
-        sensor_button.setCheckable(True)
-        sensor_button.clicked.connect(lambda: self.changeSection(Window.Sensor))
-        sensor_button.setFixedWidth(175)
-
-        pattern_button = QtGui.QToolButton()
-        pattern_button.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
-        pattern_button.setText("Pattern")
-        pattern_button.setProperty("buttonType", "leftFrameButton")
-        pattern_button.setObjectName("patternButton")
-        pattern_button.setIcon(QtGui.QIcon(r'./images/left_buttons/pattern.svg'))
-        pattern_button.setCheckable(True)
-        pattern_button.setIconSize(QtCore.QSize(32, 32))
-        pattern_button.setFixedWidth(175)
-
-        stackup_button = QtGui.QToolButton()
-        stackup_button.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
-        stackup_button.setText("StackUp")
-        stackup_button.setProperty("buttonType", "leftFrameButton")
-        stackup_button.setObjectName("stackupButton")
-        stackup_button.setIcon( QtGui.QIcon(r'./images/left_buttons/stackup.svg'))
-        stackup_button.setCheckable(True)
-        stackup_button.setIconSize(QtCore.QSize(32, 32))
-        stackup_button.setFixedWidth(175)
-
-        traces_button = QtGui.QToolButton()
-        traces_button.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
-        traces_button.setText("Trace")
-        traces_button.setProperty("buttonType", "leftFrameButton")
-        traces_button.setObjectName("tracesButton")
-        traces_button.setIcon(QtGui.QIcon(r'./images/left_buttons/traces.svg'))
-        traces_button.setCheckable(True)
-        traces_button.setIconSize(QtCore.QSize(32, 32))
-        traces_button.setFixedWidth(175)
-
-        analysis_button = QtGui.QToolButton()
-        analysis_button.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
-        analysis_button.setText("Analysis")
-        analysis_button.setProperty("buttonType", "leftFrameButton")
-        analysis_button.setObjectName("analysisButton")
-        analysis_button.setIcon( QtGui.QIcon(r'./images/left_buttons/analysis.svg'))
-        analysis_button.setCheckable(True)
-        analysis_button.setIconSize(QtCore.QSize(32, 32))
-        analysis_button.setFixedWidth(175)
+        or_label = QtGui.QLabel("Or")
+        or_label.setProperty("labelType", "orLabel")
 
         left_layout = QtGui.QVBoxLayout()
         left_layout.addWidget(controller_button, 0, QtCore.Qt.AlignTop)
@@ -593,6 +552,10 @@ class Window(QtGui.QWidget):
         left_layout.addWidget(stackup_button, 0, QtCore.Qt.AlignTop)
         left_layout.addWidget(traces_button, 0, QtCore.Qt.AlignTop)
         left_layout.addWidget(analysis_button, 0, QtCore.Qt.AlignTop)
+        left_layout.addWidget(solve_button, 0, QtCore.Qt.AlignBottom | QtCore.Qt.AlignHCenter)
+        left_layout.addWidget(or_label, 0, QtCore.Qt.AlignBottom | QtCore.Qt.AlignHCenter)
+        left_layout.addWidget(solve_on_cloud_button, 0, QtCore.Qt.AlignBottom | QtCore.Qt.AlignHCenter)
+
         left_layout.setContentsMargins(0, 0, 0, 0)
         left_layout.setSpacing(10)
         left_layout.addStretch(0)
@@ -641,4 +604,3 @@ if __name__ == '__main__':
     window.show()
     sys.exit(app.exec_())
 
-    #Left color: 17202b
