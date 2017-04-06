@@ -149,13 +149,14 @@ class Window(QtGui.QWidget):
         central_widget = self.createCentralFrame()
         top_widget = self.createTopFrame()
         left_widget = self.createLeftFrame()
+        status_bar = self.createStatusBar()
 
         layout = SenseLayout()
         layout.setSpacing(0)
         layout.addWidget( top_widget, SenseLayout.Top )
         layout.addWidget( left_widget, SenseLayout.Left)
         layout.addWidget( central_widget, SenseLayout.Middle )
-
+        layout.addWidget(status_bar, SenseLayout.Bottom)
         self.setLayout(layout)
         self.setWindowTitle("Sense Demo")
 
@@ -170,6 +171,12 @@ class Window(QtGui.QWidget):
     def newControllerPressed(self):
         dialog = self.createNewControllerDialog()
         dialog.exec_();
+
+    def createStatusBar(self):
+        status_bar = QtGui.QStatusBar()
+        status_bar.setProperty("frameType", "statusBar")
+        status_bar.showMessage("Fieldscale Sense")
+        return status_bar
 
     def createLabel(self, text):
         label = QtGui.QLabel(text)
@@ -448,6 +455,17 @@ class Window(QtGui.QWidget):
 
         return simulation_summary_frame
 
+    def createIdentityButton(self, text):
+        button = QtGui.QToolButton()
+        button.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
+        button.setText(text)
+        button.setIcon(QtGui.QIcon("./images/top_buttons/identity.svg"))
+        button.setIconSize(QtCore.QSize(32, 32))
+        button.setProperty("buttonType", "identityButton")
+        button.setObjectName("identityButton")
+
+        return button
+
     def createTopFrameButton(self, text, img):
         button = QtGui.QToolButton()
         button.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
@@ -474,6 +492,9 @@ class Window(QtGui.QWidget):
         save_as_button = self.createTopFrameButton("Save As", "./images/top_buttons/save.svg")
         new_button = self.createTopFrameButton("New", "./images/top_buttons/new.svg")
         share_button = self.createTopFrameButton("Share", "./images/top_buttons/share.svg")
+        preview_button = self.createBorderOnlyButton("Preview")
+        preview_button.setFixedWidth(100)
+        identity_button = self.createIdentityButton("Adam")
 
         top_layout = QtGui.QHBoxLayout()
         top_layout.addWidget(logo_button, 0, QtCore.Qt.AlignLeft)
@@ -482,6 +503,8 @@ class Window(QtGui.QWidget):
         top_layout.addWidget(save_as_button, 0, QtCore.Qt.AlignLeft)
         top_layout.addWidget(new_button, 0, QtCore.Qt.AlignLeft)
         top_layout.addWidget(share_button, 0, QtCore.Qt.AlignLeft)
+        top_layout.addWidget(preview_button, 0, QtCore.Qt.AlignLeft)
+        top_layout.addWidget(identity_button, 1, QtCore.Qt.AlignRight)
         top_layout.setContentsMargins(0,0,0,0)
         top_layout.setSpacing(10)
         top_layout.addStretch(0)
@@ -500,17 +523,25 @@ class Window(QtGui.QWidget):
         button = QtGui.QToolButton()
         button.setText("Solve")
         button.setProperty("buttonType", "solveButton")
+        button.setObjectName("solveButton")
 
         button.setFixedWidth(100)
 
         return button
 
-    def createSolveOnCloudButton(self):
+    def createBorderOnlyButton(self, text):
         button = QtGui.QToolButton()
-        button.setText("Solve on Cloud")
-        button.setProperty("buttonType", "solveOnCloudButton")
+        button.setProperty("buttonType", "borderOnlyButton")
+        button.setObjectName(text+"Button")
+        button.setText(text)
 
-        button.setFixedWidth(150)
+        return button
+
+    def createBottomLeftButton(self, text):
+        button = QtGui.QToolButton()
+        button.setProperty("buttonType", "bottomLeftButton")
+        button.setObjectName(text+"Button")
+        button.setText(text)
 
         return button
 
@@ -540,10 +571,22 @@ class Window(QtGui.QWidget):
         traces_button = self.createLeftFrameButton("Traces", "./images/left_buttons/traces.svg", self.Controller)
         analysis_button = self.createLeftFrameButton("Analysis", "./images/left_buttons/analysis.svg", self.Sensor)
         solve_button = self.createSolveButton()
-        solve_on_cloud_button = self.createSolveOnCloudButton()
+        solve_on_cloud_button = self.createBorderOnlyButton("Solve on Cloud")
+        solve_on_cloud_button.setFixedWidth(150)
 
-        or_label = QtGui.QLabel("Or")
+        or_label = QtGui.QLabel("or")
         or_label.setProperty("labelType", "orLabel")
+
+        bottom_label = QtGui.QLabel("Licensed software developed by Fieldscale. All rights reserved 2017")
+        bottom_label.setProperty("labelType", "bottomLabel")
+        bottom_label.setWordWrap(True)
+        bottom_label.setAlignment(QtCore.Qt.AlignHCenter)
+
+        about_help_layout = QtGui.QHBoxLayout()
+        about = self.createBottomLeftButton("About")
+        help = self.createBottomLeftButton("Help")
+        about_help_layout.addWidget(about)
+        about_help_layout.addWidget(help)
 
         left_layout = QtGui.QVBoxLayout()
         left_layout.addWidget(controller_button, 0, QtCore.Qt.AlignTop)
@@ -552,9 +595,11 @@ class Window(QtGui.QWidget):
         left_layout.addWidget(stackup_button, 0, QtCore.Qt.AlignTop)
         left_layout.addWidget(traces_button, 0, QtCore.Qt.AlignTop)
         left_layout.addWidget(analysis_button, 0, QtCore.Qt.AlignTop)
-        left_layout.addWidget(solve_button, 0, QtCore.Qt.AlignBottom | QtCore.Qt.AlignHCenter)
+        left_layout.addWidget(solve_button, 1, QtCore.Qt.AlignBottom | QtCore.Qt.AlignHCenter)
         left_layout.addWidget(or_label, 0, QtCore.Qt.AlignBottom | QtCore.Qt.AlignHCenter)
         left_layout.addWidget(solve_on_cloud_button, 0, QtCore.Qt.AlignBottom | QtCore.Qt.AlignHCenter)
+        left_layout.addWidget(bottom_label, 0, QtCore.Qt.AlignBottom | QtCore.Qt.AlignHCenter)
+        left_layout.addLayout(about_help_layout)
 
         left_layout.setContentsMargins(0, 0, 0, 0)
         left_layout.setSpacing(10)
