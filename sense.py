@@ -132,7 +132,7 @@ class SenseLayout(QtGui.QLayout):
 
 class Window(QtGui.QWidget):
 
-    Sensor, Controller = range(2)
+    Controller, Sensor, Pattern, StackUp, Traces, Analysis = range(6)
 
     sectionChanged = QtCore.pyqtSignal(int, name='sectionChanged')
 
@@ -162,10 +162,7 @@ class Window(QtGui.QWidget):
 
     @QtCore.pyqtSlot(int, name='changeSection')
     def changeSection(self, section):
-        if section == Window.Sensor:
-            self._central_widget.setCurrentIndex(section)
-        if section == Window.Controller:
-            self._central_widget.setCurrentIndex(section)
+        self._central_widget.setCurrentIndex(section)
 
     @QtCore.pyqtSlot(name="newController")
     def newControllerPressed(self):
@@ -188,6 +185,14 @@ class Window(QtGui.QWidget):
             return self.createSensorSection()
         elif section == Window.Controller:
             return self.createControllerSection()
+        elif section == Window.StackUp:
+            return self.createStackUpSection()
+        elif section == Window.Pattern:
+            return self.createPatternSection()
+        elif section == Window.Traces:
+            return self.createTracesSection()
+        elif section == Window.Analysis:
+            return self.createAnalysisSection()
 
     def createSensorSection(self):
         sensor_label = QtGui.QLabel("Sensor Section")
@@ -200,7 +205,13 @@ class Window(QtGui.QWidget):
 
         sensor_frame = QtGui.QFrame(self)
         sensor_frame.setLayout(sensor_layout)
-        sensor_frame.setStyleSheet("QFrame { background-color: yellow }")
+        sensor_frame.setProperty("frameType", "sectionFrame")
+
+        effect = QtGui.QGraphicsDropShadowEffect(sensor_frame)
+        effect.setOffset(0, 0)
+        effect.setBlurRadius(2)
+        effect.setColor(QtGui.QColor("#333333"))
+        sensor_frame.setGraphicsEffect(effect)
 
         return sensor_frame
 
@@ -227,9 +238,140 @@ class Window(QtGui.QWidget):
         controller_section_layout.addWidget(controller_right_frame)
 
         controller_frame.setLayout(controller_section_layout)
-        controller_frame.setStyleSheet("QFrame { background-color: #ededed;}")
+        controller_frame.setProperty("frameType", "sectionFrame")
+
+        effect = QtGui.QGraphicsDropShadowEffect(controller_frame)
+        effect.setOffset(0, 0)
+        effect.setBlurRadius(2)
+        effect.setColor(QtGui.QColor("#333333"))
+        controller_frame.setGraphicsEffect(effect)
+
         self.createNewControllerDialog()
         return controller_frame
+
+    def createStackUpSection(self):
+        stackup_frame = QtGui.QFrame(self)
+        layout = QtGui.QVBoxLayout()
+
+        effect = QtGui.QGraphicsDropShadowEffect(stackup_frame)
+        effect.setOffset(0, 0)
+        effect.setBlurRadius(2)
+        effect.setColor(QtGui.QColor("#333333"))
+        stackup_frame.setGraphicsEffect(effect)
+
+        stackup_frame.setProperty("frameType", "sectionFrame")
+
+        top_row_layout = QtGui.QHBoxLayout()
+        layer_num_label = QtGui.QLabel("Number of layers")
+        layer_combo = CustomComboBox()
+
+        add_material_button = self.createStackupAddMaterialButton("Add Material", "./images/stackup/add.svg")
+        edit_button = self.createBorderOnlyStackupButtons("Edit", "./images/stackup/edit.svg")
+        delete_button = self.createBorderOnlyStackupButtons("Delete", "./images/stackup/delete.svg")
+
+        top_row_layout.addWidget(layer_num_label, 0, QtCore.Qt.AlignLeft)
+        top_row_layout.addWidget(layer_combo, 0, QtCore.Qt.AlignLeft)
+        top_row_layout.addWidget(add_material_button, 1, QtCore.Qt.AlignRight)
+        top_row_layout.addWidget(edit_button, 0, QtCore.Qt.AlignRight)
+        top_row_layout.addWidget(delete_button, 0, QtCore.Qt.AlignRight)
+        top_row_layout.setContentsMargins(0,0,0,0)
+
+        border_label = QtGui.QLabel("")
+        border_label.setFixedHeight(4)
+        border_label.setStyleSheet("border: 2px solid #ededed;")
+
+        empty_label = QtGui.QLabel("")
+        material_label = QtGui.QLabel("MATERIAL")
+        rel_perm_label = QtGui.QLabel("RELATIVE PERMITTIVETY")
+        thickness_label = QtGui.QLabel("THICKNESS")
+        gp_label = QtGui.QLabel("GROUNDED PLANE")
+
+        material_label.setProperty("labelType","stackUpDescLabel")
+        rel_perm_label.setProperty("labelType","stackUpDescLabel")
+        thickness_label.setProperty("labelType","stackUpDescLabel")
+        gp_label.setProperty("labelType","stackUpDescLabel")
+
+        label_layout = QtGui.QGridLayout()
+        label_layout.addWidget(empty_label, 0, 0, QtCore.Qt.AlignCenter)
+        label_layout.addWidget(material_label, 0, 1, QtCore.Qt.AlignCenter)
+        label_layout.addWidget(rel_perm_label, 0, 2, QtCore.Qt.AlignCenter)
+        label_layout.addWidget(thickness_label, 0, 3, QtCore.Qt.AlignCenter)
+        label_layout.addWidget(gp_label, 0, 4, QtCore.Qt.AlignCenter)
+        label_layout.setColumnStretch(0,1)
+        label_layout.setColumnStretch(1,1)
+        label_layout.setColumnStretch(2,1)
+        label_layout.setColumnStretch(3,1)
+        label_layout.setColumnStretch(4,1)
+
+        layout.addLayout(top_row_layout)
+        layout.addWidget(border_label)
+        layout.addLayout(label_layout)
+
+        for i in range(10):
+            test_frame = QtGui.QFrame(stackup_frame)
+            test_layout = QtGui.QGridLayout(test_frame)
+            test_layout.setContentsMargins(0,0,0,0)
+
+            layer_label = QtGui.QLabel("Layer 1")
+            material = CustomComboBox()
+            material.addItem("Material 1")
+            material.addItem("Material 2")
+            material.addItem("Material 3")
+            rel_perm = CustomLineEdit()
+            thickness = QtGui.QLabel("4")
+            thickness.setAlignment(QtCore.Qt.AlignCenter)
+            grounded = QtGui.QCheckBox()
+
+            test_layout.setColumnStretch(0, 1)
+            test_layout.setColumnStretch(1, 1)
+            test_layout.setColumnStretch(2, 1)
+            test_layout.setColumnStretch(3, 1)
+            test_layout.setColumnStretch(4, 1)
+
+            test_layout.addWidget(layer_label, 0, 0)
+            test_layout.addWidget(material, 0, 1)
+            test_layout.addWidget(rel_perm, 0, 2)
+            test_layout.addWidget(thickness, 0, 3)
+            test_layout.addWidget(grounded, 0, 4, QtCore.Qt.AlignCenter)
+
+            test_frame.setProperty("frameType", "layerRowFrame")
+            layout.addWidget(test_frame)
+
+        stackup_frame.setLayout(layout)
+        return stackup_frame
+
+    def createPatternSection(self):
+        pattern_frame = QtGui.QFrame(self)
+
+        effect = QtGui.QGraphicsDropShadowEffect(pattern_frame)
+        effect.setOffset(0, 0)
+        effect.setBlurRadius(2)
+        effect.setColor(QtGui.QColor("#333333"))
+        pattern_frame.setGraphicsEffect(effect)
+
+        return pattern_frame
+    
+    def createTracesSection(self):
+        traces_frame = QtGui.QFrame(self)
+
+        effect = QtGui.QGraphicsDropShadowEffect(traces_frame)
+        effect.setOffset(0, 0)
+        effect.setBlurRadius(2)
+        effect.setColor(QtGui.QColor("#333333"))
+        traces_frame.setGraphicsEffect(effect)
+
+        return traces_frame
+    
+    def createAnalysisSection(self):
+        analysis_frame = QtGui.QFrame(self)
+
+        effect = QtGui.QGraphicsDropShadowEffect(analysis_frame)
+        effect.setOffset(0, 0)
+        effect.setBlurRadius(2)
+        effect.setColor(QtGui.QColor("#333333"))
+        analysis_frame.setGraphicsEffect(effect)
+
+        return analysis_frame
 
     def createNewControllerDialog(self):
         dialog = NewControllerDialog("New Controller", self)
@@ -256,6 +398,30 @@ class Window(QtGui.QWidget):
         button_layout.addWidget(delete_button)
 
         return button_layout
+
+    def createBorderOnlyStackupButtons(self, text, img):
+        button = QtGui.QToolButton()
+        button.setProperty("buttonType", "borderOnlyStackupButton")
+        button.setFixedHeight(28)
+
+        button.setObjectName(text+"Button")
+        button.setText(text)
+        button.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
+        button.setIcon(QtGui.QIcon(img))
+        button.setIconSize(QtCore.QSize(20, 20))
+        return button
+
+    def createStackupAddMaterialButton(self, text, img):
+        button = QtGui.QToolButton()
+        button.setProperty("buttonType", "stackupAddMaterialButton")
+        button.setFixedHeight(28)
+
+        button.setObjectName(text+"Button")
+        button.setText(text)
+        button.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
+        button.setIcon(QtGui.QIcon(img))
+        button.setIconSize(QtCore.QSize(20, 20))
+        return button
 
     def createControllerUnitTable(self):
         unit_table = CustomTableWidget()
@@ -341,16 +507,19 @@ class Window(QtGui.QWidget):
 
     def createCentralFrame(self):
         self._central_widget = QtGui.QStackedWidget()
-        self._central_widget.addWidget(self.createSection(Window.Sensor))
         self._central_widget.addWidget(self.createSection(Window.Controller))
+        self._central_widget.addWidget(self.createSection(Window.Sensor))
+        self._central_widget.addWidget(self.createSection(Window.Pattern))
+        self._central_widget.addWidget(self.createSection(Window.StackUp))
+        self._central_widget.addWidget(self.createSection(Window.Traces))
+        self._central_widget.addWidget(self.createSection(Window.Analysis))
+
         self._central_widget.setProperty("widgetType", "centralWidget")
 
         table = CustomTableWidget()
-        table_item = QtGui.QTableWidgetItem()
 
-        table.setRowCount(5)
+        table.setRowCount(7)
         table.setColumnCount(6)
-        table.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum )
         table.setHorizontalHeaderItem(0, self.createHeaderItem("Sensor"))
         table.setHorizontalHeaderItem(1, self.createHeaderItem("Controller"))
         table.setHorizontalHeaderItem(2, self.createHeaderItem("StackUp"))
@@ -360,20 +529,18 @@ class Window(QtGui.QWidget):
         table.horizontalHeader().setProperty("headerType", "tableHeader")
 
         #add table items here
-        table.setItem(0, 0, self.createTableWidgetItem("Item 1.1"))
-        table.setItem(0, 1, self.createTableWidgetItem("Item 1.2"))
-        table.setItem(1, 0, self.createTableWidgetItem("Item 2.1"))
-        table.setItem(1, 1, self.createTableWidgetItem("Item 2.2"))
-        table.setItem(2, 0, self.createTableWidgetItem("Item 3.1"))
-        table.setItem(2, 1, self.createTableWidgetItem("Item 3.2"))
-        table.setItem(3, 0, self.createTableWidgetItem("Item 4.1"))
-        table.setItem(3, 1, self.createTableWidgetItem("Item 4.2"))
+        for i in range(7):
+            for j in range(6):
+                table.setItem(i, j, self.createTableWidgetItem("Item " + str(i) + " " + str(j)))
 
+        '''
         #add spanning widget to right-most element of first row
         table.setItem(0,2,table_item)
 
         #span Right-Most Item of First Row Here
         table.setSpan(0,2,table.rowCount(), 1)
+        '''
+
         table.setShowGrid(False)
         table.verticalHeader().setVisible(False)
         table.resizeColumnsToContents()
@@ -411,8 +578,12 @@ class Window(QtGui.QWidget):
 
         simulation_summary_layout = QtGui.QHBoxLayout()
         simulation_summary_layout.addWidget(simulation_summary_label, 0, QtCore.Qt.AlignCenter)
+        simulation_summary_layout.setContentsMargins(0,0,0,0)
+        simulation_summary_layout.setMargin(0)
+        simulation_summary_layout.setSpacing(0)
 
         simulation_summary_frame = QtGui.QFrame()
+        simulation_summary_frame.setFixedHeight(30)
         simulation_summary_frame.setLayout(simulation_summary_layout)
         simulation_summary_frame.setProperty("frameType", "simulationSummaryFrame")
 
@@ -437,18 +608,18 @@ class Window(QtGui.QWidget):
         button.setObjectName(text+"Button")
         button.setIcon(QtGui.QIcon(img))
         button.setIconSize(QtCore.QSize(24, 24))
-        button.setFixedHeight(100)
+        button.setFixedHeight(65)
 
         return button
 
     def createTopFrame(self):
-        logo_button = QtGui.QPushButton("Logo")
+        logo_button = QtGui.QPushButton("")
         logo_button.setObjectName("logoButton")
         logo_button.setIcon( QtGui.QIcon(r'./images/logo.png'))
-        logo_button.setIconSize( QtCore.QSize(56,56))
+        logo_button.setIconSize( QtCore.QSize(175,75))
         logo_button.setProperty("buttonType", "topPanelButton")
         logo_button.setFixedWidth(175)
-        logo_button.setFixedHeight(100)
+        logo_button.setFixedHeight(65)
 
         open_button = self.createTopFrameButton("Open", "./images/top_buttons/open.svg")
         save_button = self.createTopFrameButton("Save", "./images/top_buttons/save.svg")
@@ -478,7 +649,7 @@ class Window(QtGui.QWidget):
         top_frame.setContentsMargins(0,0,0,0)
         top_frame.setProperty("frameType", "topFrame")
 
-        top_frame.setFixedHeight(100)
+        top_frame.setFixedHeight(75)
 
         return top_frame
 
@@ -527,12 +698,12 @@ class Window(QtGui.QWidget):
         return button
 
     def createLeftFrame(self):
-        controller_button = self.createLeftFrameButton("Controller", "./images/left_buttons/controller.svg", self.Controller)
-        sensor_button = self.createLeftFrameButton("Sensor", "./images/left_buttons/sensor.svg", self.Sensor)
-        pattern_button = self.createLeftFrameButton("Pattern", "./images/left_buttons/pattern.svg", self.Controller)
-        stackup_button = self.createLeftFrameButton("StackUp", "./images/left_buttons/stackup.svg", self.Sensor)
-        traces_button = self.createLeftFrameButton("Traces", "./images/left_buttons/traces.svg", self.Controller)
-        analysis_button = self.createLeftFrameButton("Analysis", "./images/left_buttons/analysis.svg", self.Sensor)
+        controller_button = self.createLeftFrameButton("Controller", "./images/left_buttons/controller.svg", Window.Controller)
+        sensor_button = self.createLeftFrameButton("Sensor", "./images/left_buttons/sensor.svg", Window.Sensor)
+        pattern_button = self.createLeftFrameButton("Pattern", "./images/left_buttons/pattern.svg", Window.Pattern)
+        stackup_button = self.createLeftFrameButton("StackUp", "./images/left_buttons/stackup.svg", Window.StackUp)
+        traces_button = self.createLeftFrameButton("Traces", "./images/left_buttons/traces.svg", Window.Traces)
+        analysis_button = self.createLeftFrameButton("Analysis", "./images/left_buttons/analysis.svg", Window.Analysis)
         solve_button = self.createSolveButton()
         solve_on_cloud_button = self.createBorderOnlyButton("Solve on Cloud")
         solve_on_cloud_button.setFixedWidth(150)
@@ -587,8 +758,10 @@ class Window(QtGui.QWidget):
         return left_frame
 
 class CustomTableWidget(QtGui.QTableWidget):
-    def __init__(self):
-        super(CustomTableWidget, self).__init__()
+    def __init__(self, parent = None):
+        super(CustomTableWidget, self).__init__(parent)
+        self.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
+        self.setFocusPolicy(QtCore.Qt.NoFocus)
 
     def selectRow(self, p_int):
        #do nothing
@@ -713,15 +886,6 @@ class NewControllerDialog(QtGui.QDialog):
         self.sensitivity_field.setFixedHeight(24)
         self.bits_of_adc_field.setFixedHeight(24)
 
-        self.company_field.setProperty("fieldType", "lineEdit")
-        self.product_field.setProperty("fieldType", "lineEdit")
-        self.cmin_field.setProperty("fieldType", "lineEdit")
-        self.cmax_field.setProperty("fieldType", "lineEdit")
-        self.x_electrodes_field.setProperty("fieldType", "lineEdit")
-        self.y_electrodes_field.setProperty("fieldType", "lineEdit")
-        self.sensitivity_field.setProperty("fieldType", "lineEdit")
-        self.bits_of_adc_field.setProperty("fieldType", "lineEdit")
-
         cmin_layout = QtGui.QHBoxLayout()
         cmax_layout = QtGui.QHBoxLayout()
         sensitivity_layout = QtGui.QHBoxLayout()
@@ -765,43 +929,66 @@ class NewControllerDialog(QtGui.QDialog):
         if item == NewControllerDialog.Sensitivity:
             self.bits_of_adc_border_label.setStyleSheet("border: 4px solid #ededed");
             self.bits_of_adc_label.setStyleSheet("color: #dcdcdc;")
+            self.bits_of_adc_field.setStyleSheet("color: #dcdcdc;")
 
             self.sensitivity_pf_label.setStyleSheet("color: black;")
             self.sensitivity_label.setStyleSheet("color: black;")
             self.sensitivity_border_label.setStyleSheet("border: 4px solid #6533AC")
+            self.sensitivity_field.setStyleSheet("color: blackl")
 
         elif item == NewControllerDialog.Bits_of_adc:
             self.sensitivity_border_label.setStyleSheet("border: 4px solid #ededed");
             self.sensitivity_label.setStyleSheet("color: #dcdcdc;")
             self.sensitivity_pf_label.setStyleSheet("color: #dcdcdc");
+            self.sensitivity_field.setStyleSheet("color: #dcdcdc;")
 
             self.bits_of_adc_label.setStyleSheet("color: black;")
+            self.bits_of_adc_field.setStyleSheet("color: black;")
             self.bits_of_adc_border_label.setStyleSheet("border: 4px solid #6533AC")
 
 class CustomLineEdit(QtGui.QLineEdit):
     def __init__(self, parent=None, field = None):
         super(CustomLineEdit, self).__init__(parent)
         self.field = field
+        self.setProperty("fieldType", "lineEdit")
 
     def focusInEvent(self, QFocusEvent):
         QtGui.QLineEdit.focusInEvent(self, QtGui.QFocusEvent(QtCore.QEvent.FocusIn))
-        self.parent().parent().setBottomFieldVisibility(self.field)
 
         if self.field != None:
+            self.parent().parent().setBottomFieldVisibility(self.field)
             effect = QtGui.QGraphicsDropShadowEffect(self)
             effect.setOffset(0, 0)
-            effect.setBlurRadius(15)
+            effect.setBlurRadius(10)
             effect.setColor(QtGui.QColor("#6533AC"))
             self.setGraphicsEffect(effect)
         else:
             effect = QtGui.QGraphicsDropShadowEffect(self)
             effect.setOffset(0, 0)
-            effect.setBlurRadius(15)
+            effect.setBlurRadius(10)
             effect.setColor(QtGui.QColor("#1053DA"))
             self.setGraphicsEffect(effect)
 
     def focusOutEvent(self, QFocusEvent):
         QtGui.QLineEdit.focusOutEvent(self, QtGui.QFocusEvent(QtCore.QEvent.FocusOut))
+        self.setGraphicsEffect(None)
+
+class CustomComboBox(QtGui.QComboBox):
+    def __init__(self, parent=None):
+        super(CustomComboBox, self).__init__(parent)
+        self.setProperty("fieldType", "comboBox")
+
+    def focusInEvent(self, QFocusEvent):
+        QtGui.QComboBox.focusInEvent(self, QtGui.QFocusEvent(QtCore.QEvent.FocusIn))
+
+        effect = QtGui.QGraphicsDropShadowEffect(self)
+        effect.setOffset(0, 0)
+        effect.setBlurRadius(15)
+        effect.setColor(QtGui.QColor("#1053DA"))
+        self.setGraphicsEffect(effect)
+
+    def focusOutEvent(self, QFocusEvent):
+        QtGui.QComboBox.focusOutEvent(self, QtGui.QFocusEvent(QtCore.QEvent.FocusOut))
         self.setGraphicsEffect(None)
 
 if __name__ == '__main__':
