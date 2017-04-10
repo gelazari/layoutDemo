@@ -260,5 +260,5 @@ QLineEdit[fieldType="lineEdit"]
 
 QLabel[labelType="ncBorderLabel"]
 {
-    border: 4px solid #6533AC;
+    border: 4px solid #ededed;
 }

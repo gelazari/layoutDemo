@@ -599,6 +599,8 @@ class CustomTableWidget(QtGui.QTableWidget):
         return
 
 class NewControllerDialog(QtGui.QDialog):
+    Sensitivity, Bits_of_adc = range(2)
+
     def __init__(self, title, parent=None):
         super(NewControllerDialog, self).__init__(parent)
 
@@ -648,113 +650,159 @@ class NewControllerDialog(QtGui.QDialog):
 
         bot_frame_layout = QtGui.QHBoxLayout()
 
-        general_label = QtGui.QLabel("GENERAL")
-        empty_label = QtGui.QLabel(" ")
-        company_label = QtGui.QLabel("Company")
-        product_label = QtGui.QLabel("Product")
+        self.general_label = QtGui.QLabel("GENERAL")
+        self.empty_label = QtGui.QLabel(" ")
+        self.company_label = QtGui.QLabel("Company")
+        self.product_label = QtGui.QLabel("Product")
 
-        technical_label = QtGui.QLabel("TECHNICAL")
-        cmin_label = QtGui.QLabel("C min")
-        cmax_label = QtGui.QLabel("C max ")
+        self.technical_label = QtGui.QLabel("TECHNICAL")
+        self.cmin_label = QtGui.QLabel("C min")
+        self.cmax_label = QtGui.QLabel("C max ")
 
-        electrodes_label = QtGui.QLabel("ELECTRODES")
-        x_electrodes_label = QtGui.QLabel("x Electrodes")
-        y_electrodes_label = QtGui.QLabel("y Electrodes")
+        self.electrodes_label = QtGui.QLabel("ELECTRODES")
+        self.x_electrodes_label = QtGui.QLabel("x Electrodes")
+        self.y_electrodes_label = QtGui.QLabel("y Electrodes")
 
-        sensitivity_label = QtGui.QLabel("Sensitivity")
-        bits_of_adc_label = QtGui.QLabel("Bits of ADC")
+        self.sensitivity_label = QtGui.QLabel("Sensitivity")
+        self.bits_of_adc_label = QtGui.QLabel("Bits of ADC")
 
-        company_label.setProperty("labelType", "fieldLabel")
-        product_label.setProperty("labelType", "fieldLabel")
-        cmin_label.setProperty("labelType", "fieldLabel")
-        cmax_label.setProperty("labelType", "fieldLabel")
-        x_electrodes_label.setProperty("labelType", "fieldLabel")
-        y_electrodes_label.setProperty("labelType", "fieldLabel")
-        sensitivity_label.setProperty("labelType", "fieldLabel")
-        bits_of_adc_label.setProperty("labelType", "fieldLabel")
+        self.company_label.setProperty("labelType", "fieldLabel")
+        self.product_label.setProperty("labelType", "fieldLabel")
+        self.cmin_label.setProperty("labelType", "fieldLabel")
+        self.cmax_label.setProperty("labelType", "fieldLabel")
+        self.x_electrodes_label.setProperty("labelType", "fieldLabel")
+        self.y_electrodes_label.setProperty("labelType", "fieldLabel")
+        self.sensitivity_label.setProperty("labelType", "fieldLabel")
+        self.bits_of_adc_label.setProperty("labelType", "fieldLabel")
 
-        general_label.setProperty("labelType", "sectionLabel")
-        technical_label.setProperty("labelType", "sectionLabel")
-        electrodes_label.setProperty("labelType", "sectionLabel")
-        empty_label.setProperty("labelType", "sectionLabel")
+        self.general_label.setProperty("labelType", "sectionLabel")
+        self.technical_label.setProperty("labelType", "sectionLabel")
+        self.electrodes_label.setProperty("labelType", "sectionLabel")
+        self.empty_label.setProperty("labelType", "sectionLabel")
 
-        cmin_pf_label = QtGui.QLabel("pF")
-        cmax_pf_label = QtGui.QLabel("pF")
-        sensitivity_pf_label = QtGui.QLabel("pF")
-        cmin_pf_label.setProperty("labelType", "pfLabel")
-        cmax_pf_label.setProperty("labelType", "pfLabel")
-        sensitivity_pf_label.setProperty("labelType", "pfLabel")
+        self.cmin_pf_label = QtGui.QLabel("pF")
+        self.cmax_pf_label = QtGui.QLabel("pF")
+        self.sensitivity_pf_label = QtGui.QLabel("pF")
+        self.cmin_pf_label.setProperty("labelType", "pfLabel")
+        self.cmax_pf_label.setProperty("labelType", "pfLabel")
+        self.sensitivity_pf_label.setProperty("labelType", "pfLabel")
 
-        company_field = QtGui.QLineEdit()
-        product_field = QtGui.QLineEdit()
-        cmin_field = QtGui.QLineEdit()
-        cmax_field = QtGui.QLineEdit()
-        x_electrodes_field = QtGui.QLineEdit()
-        y_electrodes_field = QtGui.QLineEdit()
-        sensitivity_field = QtGui.QLineEdit()
-        bits_of_adc_field = QtGui.QLineEdit()
+        self.sensitivity_border_label = QtGui.QLabel()
+        self.sensitivity_border_label.setProperty("labelType", "ncBorderLabel")
+        self.sensitivity_border_label.setFixedHeight(8)
 
-        company_field.setFixedHeight(24)
-        product_field.setFixedHeight(24)
-        cmin_field.setFixedHeight(24)
-        cmax_field.setFixedHeight(24)
-        x_electrodes_field.setFixedHeight(24)
-        y_electrodes_field.setFixedHeight(24)
-        sensitivity_field.setFixedHeight(24)
-        bits_of_adc_field.setFixedHeight(24)
+        self.bits_of_adc_border_label = QtGui.QLabel()
+        self.bits_of_adc_border_label.setProperty("labelType", "ncBorderLabel")
+        self.bits_of_adc_border_label.setFixedHeight(8)
 
-        company_field.setProperty("fieldType", "lineEdit")
-        product_field.setProperty("fieldType", "lineEdit")
-        cmin_field.setProperty("fieldType", "lineEdit")
-        cmax_field.setProperty("fieldType", "lineEdit")
-        x_electrodes_field.setProperty("fieldType", "lineEdit")
-        y_electrodes_field.setProperty("fieldType", "lineEdit")
-        sensitivity_field.setProperty("fieldType", "lineEdit")
-        bits_of_adc_field.setProperty("fieldType", "lineEdit")
+        self.company_field = CustomLineEdit()
+        self.product_field = CustomLineEdit()
+        self.cmin_field = CustomLineEdit()
+        self.cmax_field = CustomLineEdit()
+        self.x_electrodes_field = CustomLineEdit()
+        self.y_electrodes_field = CustomLineEdit()
+        self.sensitivity_field = CustomLineEdit(field = NewControllerDialog.Sensitivity)
+        self.bits_of_adc_field = CustomLineEdit(field = NewControllerDialog.Bits_of_adc)
+
+        self.company_field.setFixedHeight(24)
+        self.product_field.setFixedHeight(24)
+        self.cmin_field.setFixedHeight(24)
+        self.cmax_field.setFixedHeight(24)
+        self.x_electrodes_field.setFixedHeight(24)
+        self.y_electrodes_field.setFixedHeight(24)
+        self.sensitivity_field.setFixedHeight(24)
+        self.bits_of_adc_field.setFixedHeight(24)
+
+        self.company_field.setProperty("fieldType", "lineEdit")
+        self.product_field.setProperty("fieldType", "lineEdit")
+        self.cmin_field.setProperty("fieldType", "lineEdit")
+        self.cmax_field.setProperty("fieldType", "lineEdit")
+        self.x_electrodes_field.setProperty("fieldType", "lineEdit")
+        self.y_electrodes_field.setProperty("fieldType", "lineEdit")
+        self.sensitivity_field.setProperty("fieldType", "lineEdit")
+        self.bits_of_adc_field.setProperty("fieldType", "lineEdit")
 
         cmin_layout = QtGui.QHBoxLayout()
         cmax_layout = QtGui.QHBoxLayout()
         sensitivity_layout = QtGui.QHBoxLayout()
 
-        cmin_layout.addWidget(cmin_field)
-        cmin_layout.addWidget(cmin_pf_label)
-        cmax_layout.addWidget(cmax_field)
-        cmax_layout.addWidget(cmax_pf_label)
-        sensitivity_layout.addWidget(sensitivity_field)
-        sensitivity_layout.addWidget(sensitivity_pf_label)
-
-        sensitivity_border_label = QtGui.QLabel()
-        sensitivity_border_label.setProperty("labelType", "ncBorderLabel")
-        sensitivity_border_label.setFixedHeight(8)
-
-        bits_of_adc_border_label = QtGui.QLabel()
-        bits_of_adc_border_label.setProperty("labelType", "ncBorderLabel")
-        bits_of_adc_border_label.setFixedHeight(8)
+        cmin_layout.addWidget(self.cmin_field)
+        cmin_layout.addWidget(self.cmin_pf_label)
+        cmax_layout.addWidget(self.cmax_field)
+        cmax_layout.addWidget(self.cmax_pf_label)
+        sensitivity_layout.addWidget(self.sensitivity_field)
+        sensitivity_layout.addWidget(self.sensitivity_pf_label)
 
         left_row = QtGui.QFormLayout()
         right_row = QtGui.QFormLayout()
 
-        left_row.addRow(general_label)
-        left_row.addRow(company_label, company_field)
-        left_row.addRow(technical_label)
-        left_row.addRow(cmin_label, cmin_layout)
-        left_row.addRow(cmax_label, cmax_layout)
-        left_row.addRow(sensitivity_border_label)
-        left_row.addRow(sensitivity_label, sensitivity_layout)
+        left_row.setSpacing(12)
+        right_row.setSpacing(12)
 
-        right_row.addRow(empty_label)
-        right_row.addRow(product_label, product_field)
-        right_row.addRow(electrodes_label)
-        right_row.addRow(x_electrodes_label, x_electrodes_field)
-        right_row.addRow(y_electrodes_label, y_electrodes_field)
-        right_row.addRow(bits_of_adc_border_label)
-        right_row.addRow(bits_of_adc_label, bits_of_adc_field)
+        left_row.addRow(self.general_label)
+        left_row.addRow(self.company_label, self.company_field)
+        left_row.addRow(self.technical_label)
+        left_row.addRow(self.cmin_label, cmin_layout)
+        left_row.addRow(self.cmax_label, cmax_layout)
+        left_row.addRow(self.sensitivity_border_label)
+        left_row.addRow(self.sensitivity_label, sensitivity_layout)
+
+        right_row.addRow(self.empty_label)
+        right_row.addRow(self.product_label, self.product_field)
+        right_row.addRow(self.electrodes_label)
+        right_row.addRow(self.x_electrodes_label, self.x_electrodes_field)
+        right_row.addRow(self.y_electrodes_label, self.y_electrodes_field)
+        right_row.addRow(self.bits_of_adc_border_label)
+        right_row.addRow(self.bits_of_adc_label, self.bits_of_adc_field)
 
         bot_frame_layout.addLayout(left_row, 2)
         bot_frame_layout.addLayout(right_row, 2)
         bot_frame.setLayout(bot_frame_layout)
 
         return bot_frame
+
+    def setBottomFieldVisibility(self, item):
+        if item == NewControllerDialog.Sensitivity:
+            self.bits_of_adc_border_label.setStyleSheet("border: 4px solid #ededed");
+            self.bits_of_adc_label.setStyleSheet("color: #dcdcdc;")
+
+            self.sensitivity_pf_label.setStyleSheet("color: black;")
+            self.sensitivity_label.setStyleSheet("color: black;")
+            self.sensitivity_border_label.setStyleSheet("border: 4px solid #6533AC")
+
+        elif item == NewControllerDialog.Bits_of_adc:
+            self.sensitivity_border_label.setStyleSheet("border: 4px solid #ededed");
+            self.sensitivity_label.setStyleSheet("color: #dcdcdc;")
+            self.sensitivity_pf_label.setStyleSheet("color: #dcdcdc");
+
+            self.bits_of_adc_label.setStyleSheet("color: black;")
+            self.bits_of_adc_border_label.setStyleSheet("border: 4px solid #6533AC")
+
+class CustomLineEdit(QtGui.QLineEdit):
+    def __init__(self, parent=None, field = None):
+        super(CustomLineEdit, self).__init__(parent)
+        self.field = field
+
+    def focusInEvent(self, QFocusEvent):
+        QtGui.QLineEdit.focusInEvent(self, QtGui.QFocusEvent(QtCore.QEvent.FocusIn))
+        self.parent().parent().setBottomFieldVisibility(self.field)
+
+        if self.field != None:
+            effect = QtGui.QGraphicsDropShadowEffect(self)
+            effect.setOffset(0, 0)
+            effect.setBlurRadius(15)
+            effect.setColor(QtGui.QColor("#6533AC"))
+            self.setGraphicsEffect(effect)
+        else:
+            effect = QtGui.QGraphicsDropShadowEffect(self)
+            effect.setOffset(0, 0)
+            effect.setBlurRadius(15)
+            effect.setColor(QtGui.QColor("#1053DA"))
+            self.setGraphicsEffect(effect)
+
+    def focusOutEvent(self, QFocusEvent):
+        QtGui.QLineEdit.focusOutEvent(self, QtGui.QFocusEvent(QtCore.QEvent.FocusOut))
+        self.setGraphicsEffect(None)
 
 if __name__ == '__main__':
 
