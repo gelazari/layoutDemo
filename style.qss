@@ -258,8 +258,8 @@ QLineEdit[fieldType="lineEdit"]
     padding-left: 6px;
     padding-right: 6px;
     border: 1px solid #dddddd;
-    padding-top: 4px;
-    padding-bottom: 4px;
+    padding-top: 2px;
+    padding-bottom: 2px;
     border-radius: 8px;
 }
 
@@ -269,8 +269,8 @@ QComboBox[fieldType="comboBox"]
     border-radius: 8px;
     padding-left: 6px;
     padding-right: 6px;
-    padding-top: 4px;
-    padding-bottom: 4px;
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 
 QComboBox[fieldType="comboBox"]::drop-down {
@@ -317,6 +317,6 @@ QAbstractButton[buttonType="borderOnlyStackupButton"]
 
 QFrame[frameType="layerRowFrame"]
 {
-    padding-top: 2px;
-    padding-bottom: 2px;
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
