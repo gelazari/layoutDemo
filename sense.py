@@ -252,6 +252,7 @@ class Window(QtGui.QWidget):
     def createStackUpSection(self):
         stackup_frame = QtGui.QFrame(self)
         layout = QtGui.QVBoxLayout()
+        layout.setContentsMargins(16,8,16,8)
 
         effect = QtGui.QGraphicsDropShadowEffect(stackup_frame)
         effect.setOffset(0, 0)
@@ -275,6 +276,19 @@ class Window(QtGui.QWidget):
         top_row_layout.addWidget(edit_button, 0, QtCore.Qt.AlignRight)
         top_row_layout.addWidget(delete_button, 0, QtCore.Qt.AlignRight)
         top_row_layout.setContentsMargins(0,0,0,0)
+
+        bottom_layout = QtGui.QHBoxLayout()
+        bottom_layout.setContentsMargins(0,0,0,0)
+
+        left_frame = QtGui.QFrame()
+        left_frame.setFixedWidth(250)
+        left_frame.setStyleSheet("background-color: black;")
+
+        right_frame = QtGui.QVBoxLayout()
+        right_frame.setContentsMargins(0,0,0,0)
+        right_frame.setSpacing(0)
+
+        bottom_layout.addWidget(left_frame)
 
         border_label = QtGui.QLabel("")
         border_label.setFixedHeight(4)
@@ -305,14 +319,14 @@ class Window(QtGui.QWidget):
 
         layout.addLayout(top_row_layout)
         layout.addWidget(border_label)
-        layout.addLayout(label_layout)
+        right_frame.addLayout(label_layout)
 
         for i in range(10):
             test_frame = QtGui.QFrame(stackup_frame)
             test_layout = QtGui.QGridLayout(test_frame)
             test_layout.setContentsMargins(0,0,0,0)
 
-            layer_label = QtGui.QLabel("Layer 1")
+            layer_label = QtGui.QLabel("Layer "+str(i))
             material = CustomComboBox()
             material.addItem("Material 1")
             material.addItem("Material 2")
@@ -335,7 +349,11 @@ class Window(QtGui.QWidget):
             test_layout.addWidget(grounded, 0, 4, QtCore.Qt.AlignCenter)
 
             test_frame.setProperty("frameType", "layerRowFrame")
-            layout.addWidget(test_frame)
+            right_frame.addWidget(test_frame)
+
+        bottom_layout.addLayout(right_frame)
+
+        layout.addLayout(bottom_layout)
 
         stackup_frame.setLayout(layout)
         return stackup_frame
