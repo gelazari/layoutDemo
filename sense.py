@@ -321,20 +321,27 @@ class Window(QtGui.QWidget):
         layout.addWidget(border_label)
         right_frame.addLayout(label_layout)
 
+        self.layer_list = []
+
         for i in range(10):
             test_frame = QtGui.QFrame(stackup_frame)
             test_layout = QtGui.QGridLayout(test_frame)
             test_layout.setContentsMargins(0,0,0,0)
 
             layer_label = QtGui.QLabel("Layer "+str(i))
+            layer_label.setObjectName("layer_label")
             material = CustomComboBox()
+            material.setObjectName("material")
             material.addItem("Material 1")
             material.addItem("Material 2")
             material.addItem("Material 3")
             rel_perm = CustomLineEdit()
+            rel_perm.setObjectName("rel_perm")
             thickness = QtGui.QLabel("4")
+            thickness.setObjectName("thickness")
             thickness.setAlignment(QtCore.Qt.AlignCenter)
             grounded = QtGui.QCheckBox()
+            grounded.setObjectName("grounded")
 
             test_layout.setColumnStretch(0, 1)
             test_layout.setColumnStretch(1, 1)
@@ -351,12 +358,40 @@ class Window(QtGui.QWidget):
             test_frame.setProperty("frameType", "layerRowFrame")
             right_frame.addWidget(test_frame)
 
-        bottom_layout.addLayout(right_frame)
+            self.layer_list.append(test_frame)
 
+        bottom_layout.addLayout(right_frame)
+        self.disableLayer(3)
+        self.disableLayer(4)
+        self.disableLayer(5)
+        self.disableLayer(6)
+        self.disableLayer(7)
+        self.disableLayer(8)
+        self.disableLayer(9)
         layout.addLayout(bottom_layout)
 
         stackup_frame.setLayout(layout)
         return stackup_frame
+
+    def disableLayer(self, i):
+        frame = self.layer_list[i]
+        frame.setStyleSheet("background-color: #ededed")
+
+        frame.findChild(QtGui.QLabel, "layer_label").setDisabled(True)
+        frame.findChild(CustomComboBox, "material").setDisabled(True)
+        frame.findChild(CustomLineEdit, "rel_perm").setDisabled(True)
+        frame.findChild(QtGui.QLabel, "thickness").setDisabled(True)
+        frame.findChild(QtGui.QCheckBox, "grounded").setDisabled(True)
+
+    def enableLayer(self, i):
+        frame = self.layer_list[i]
+        frame.setStyleSheet("background-color: #ffffff")
+
+        frame.findChild(QtGui.QLabel, "layer_label").setDisabled(False)
+        frame.findChild(CustomComboBox, "material").setDisabled(False)
+        frame.findChild(CustomLineEdit, "rel_perm").setDisabled(False)
+        frame.findChild(QtGui.QLabel, "thickness").setDisabled(False)
+        frame.findChild(QtGui.QCheckBox, "grounded").setDisabled(False)
 
     def createPatternSection(self):
         pattern_frame = QtGui.QFrame(self)
