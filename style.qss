@@ -211,7 +211,6 @@ QAbstractButton[buttonType="leftFrameButton"]:pressed:focus
 {
   background-color: rgba(255,255,255,100);
   border: none;
-  color: black;
 }
 
 QAbstractButton[buttonType="topFrameButton"]
@@ -229,6 +228,14 @@ QAbstractButton[buttonType="topFrameButton"]:hover
     background-color: rgba(255,255,255,30);
 }
 
+QAbstractButton[buttonType="topFrameButton"]:pressed,
+QAbstractButton[buttonType="topFrameButton"]:pressed:focus
+{
+    background-color: rgba(255,255,255,100);
+    border: 2px solid rgba(0,0,0,0);
+}
+
+
 QAbstractButton[buttonType="solveButton"]
 {
     background-color: #0db754;
@@ -239,6 +246,18 @@ QAbstractButton[buttonType="solveButton"]
     padding: 8px 16px 8px 16px;
 }
 
+QAbstractButton[buttonType="solveButton"]:hover
+{
+    font: 18px;
+}
+
+QAbstractButton[buttonType="solveButton"]:pressed,
+QAbstractButton[buttonType="solveButton"]:pressed:focus
+{
+    margin: 2px;
+    border-radius: 19px;
+}
+
 QAbstractButton[buttonType="borderOnlyButton"]
 {
     color: #0db754;
@@ -246,6 +265,19 @@ QAbstractButton[buttonType="borderOnlyButton"]
     border-radius: 21px;
     font-size: 16px;
     padding: 8px 16px 8px 16px;
+}
+
+QAbstractButton[buttonType="borderOnlyButton"]:hover
+{
+    color: #ededed;
+    background-color: #0db754;
+}
+
+QAbstractButton[buttonType="borderOnlyButton"]:pressed,
+QAbstractButton[buttonType="borderOnlyButton"]:pressed:focus
+{
+    margin: 2px;
+    border-radius: 19px;
 }
 
 QAbstractButton[buttonType="identityButton"]
@@ -314,6 +346,13 @@ QAbstractButton[buttonType="stackupAddMaterialButton"]
     padding: 6px 12px 6px 12px;
 }
 
+QAbstractButton[buttonType="stackupAddMaterialButton"]:pressed,
+QAbstractButton[buttonType="stackupAddMaterialButton"]:pressed:focus
+{
+    margin: 1px;
+    border-radius: 12px;
+}
+
 QAbstractButton[buttonType="borderOnlyStackupButton"]
 {
     color: #f0c40e;
@@ -322,6 +361,13 @@ QAbstractButton[buttonType="borderOnlyStackupButton"]
     border-radius: 14px;
     font-size: 12px;
     padding: 6px 12px 6px 12px;
+}
+
+QAbstractButton[buttonType="borderOnlyStackupButton"]:pressed,
+QAbstractButton[buttonType="borderOnlyStackupButton"]:pressed:focus
+{
+    margin: 1px;
+    border-radius: 13px;
 }
 
 QFrame[frameType="layerRowFrame"]
