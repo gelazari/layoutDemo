@@ -42,6 +42,7 @@ QAbstractButton[buttonType="leftPanelButton"]:pressed:focus
   color: white;
 }
 
+
 QAbstractButton[buttonType="leftPanelButton"]:checked
 {
   background-color: gray;
@@ -203,6 +204,14 @@ QAbstractButton[buttonType="leftFrameButton"]:hover
     background-color: rgba(255,255,255,30);
     border-left: 4px solid #3c267a;
     padding-left: 8px;
+}
+
+QAbstractButton[buttonType="leftFrameButton"]:pressed,
+QAbstractButton[buttonType="leftFrameButton"]:pressed:focus
+{
+  background-color: rgba(255,255,255,100);
+  border: none;
+  color: black;
 }
 
 QAbstractButton[buttonType="topFrameButton"]

@@ -17,3 +17,6 @@ class CustomComboBox(QtGui.QComboBox):
     def focusOutEvent(self, QFocusEvent):
         QtGui.QComboBox.focusOutEvent(self, QtGui.QFocusEvent(QtCore.QEvent.FocusOut))
         self.setGraphicsEffect(None)
+
+    def currentIndexChanged(self, *__args):
+        console.log("yeah!")
