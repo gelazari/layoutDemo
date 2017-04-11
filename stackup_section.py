@@ -6,6 +6,7 @@ from widget_util import *
 class StackUpSection(QtGui.QFrame):
     def __init__(self, parent=None):
         super(StackUpSection, self).__init__(parent)
+        self.layer_list = []
 
         layout = QtGui.QVBoxLayout()
         layout.setContentsMargins(16, 8, 16, 8)
@@ -20,16 +21,16 @@ class StackUpSection(QtGui.QFrame):
 
         top_row_layout = QtGui.QHBoxLayout()
         layer_num_label = QtGui.QLabel("Number of layers")
-        layer_combo = CustomComboBox()
+        self.layer_combo = CustomComboBox(handler = self.onLayerNumSelection)
         for i in range(10):
-            layer_combo.addItem(str(i + 1))
+            self.layer_combo.addItem(str(i + 1))
 
         add_material_button = self.createStackupAddMaterialButton("Add Material", "./images/stackup/add.svg")
         edit_button = self.createBorderOnlyStackupButtons("Edit", "./images/stackup/edit.svg")
         delete_button = self.createBorderOnlyStackupButtons("Delete", "./images/stackup/delete.svg")
 
         top_row_layout.addWidget(layer_num_label, 0, QtCore.Qt.AlignLeft)
-        top_row_layout.addWidget(layer_combo, 0, QtCore.Qt.AlignLeft)
+        top_row_layout.addWidget(self.layer_combo, 0, QtCore.Qt.AlignLeft)
         top_row_layout.addWidget(add_material_button, 1, QtCore.Qt.AlignRight)
         top_row_layout.addWidget(edit_button, 0, QtCore.Qt.AlignRight)
         top_row_layout.addWidget(delete_button, 0, QtCore.Qt.AlignRight)
@@ -79,8 +80,6 @@ class StackUpSection(QtGui.QFrame):
         layout.addWidget(border_label)
         right_frame.addLayout(label_layout)
 
-        self.layer_list = []
-
         for i in range(10):
             layer_frame = QtGui.QFrame(self)
             layer_frame_layout = QtGui.QGridLayout(layer_frame)
@@ -114,24 +113,29 @@ class StackUpSection(QtGui.QFrame):
             layer_frame_layout.addWidget(grounded, 0, 4, QtCore.Qt.AlignCenter)
 
             layer_frame.setProperty("frameType", "layerRowFrame")
-            print(layer_frame.height())
             right_frame.addWidget(layer_frame)
 
             self.layer_list.append(layer_frame)
 
         bottom_layout.addLayout(right_frame)
-        self.disableLayer(3)
-        self.disableLayer(4)
-        self.disableLayer(5)
-        self.disableLayer(6)
-        self.disableLayer(7)
-        self.disableLayer(8)
-        self.disableLayer(9)
+
+        for i in range(1, 10):
+            self.disableLayer(i)
+
         layout.addLayout(bottom_layout)
 
         self.setLayout(layout)
 
+    def onLayerNumSelection(self):
+        for i in range(0, self.layer_combo.currentIndex()+1):
+            self.enableLayer(i)
+        for i in range(self.layer_combo.currentIndex()+1, 10):
+            self.disableLayer(i)
+
     def disableLayer(self, i):
+        if self.layer_list == []:
+            return;
+
         frame = self.layer_list[i]
         frame.setStyleSheet("background-color: #ededed")
 
@@ -143,6 +147,9 @@ class StackUpSection(QtGui.QFrame):
 
 
     def enableLayer(self, i):
+        if self.layer_list == []:
+            return;
+
         frame = self.layer_list[i]
         frame.setStyleSheet("background-color: #ffffff")
 
