@@ -337,6 +337,39 @@ QAbstractButton[buttonType="leftFrameButton"]:checked
     padding-left: 8px;
 }
 
+QAbstractButton[buttonType="controllerAddControllerButton"]
+{
+    color: #ffffff;
+    background-color: #f0c40e;
+    border-radius: 13px;
+    font-size: 12px;
+    padding: 6px 12px 6px 12px;
+}
+
+QAbstractButton[buttonType="controllerAddControllerButton"]:pressed,
+QAbstractButton[buttonType="controllerAddControllerButton"]:pressed:focus
+{
+    margin: 1px;
+    border-radius: 12px;
+}
+
+QAbstractButton[buttonType="borderOnlyControllerButton"]
+{
+    color: #f0c40e;
+    border: 2px solid #f0c40e;
+    background-color: rgba(0,0,0,0);
+    border-radius: 14px;
+    font-size: 12px;
+    padding: 6px 12px 6px 12px;
+}
+
+QAbstractButton[buttonType="borderOnlyControllerButton"]:pressed,
+QAbstractButton[buttonType="borderOnlyControllerButton"]:pressed:focus
+{
+    margin: 1px;
+    border-radius: 13px;
+}
+
 QAbstractButton[buttonType="stackupAddMaterialButton"]
 {
     color: #ffffff;
@@ -393,4 +426,25 @@ QLabel[labelType="tracesNormalLabel"]
 QCheckBox[checkBoxType="tracesCheckBox"]
 {
     padding-left: 10px;
+}
+
+QFrame[tableType="controllerUnitTable"], QFrame[tableType="controllerElectrodeTable"]
+{
+    border: 2px solid #ededed;
+}
+
+QFrame[frameType="tableRowFrame"]
+{
+    padding: 8px 16px 8px 16px;
+}
+
+QFrame[rowType="electrodeTableHeader"], QFrame[rowType="unitTableHeader"]
+{
+    background-color: rgba(100,100,100,60);
+}
+
+QFrame[frameType="alternateRowFrame"]
+{
+    padding: 8px 16px 8px 16px;
+    background-color: rgba(60,60,60, 20);
 }
