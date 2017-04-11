@@ -407,6 +407,7 @@ class Window(QtGui.QWidget):
     
     def createTracesSection(self):
         traces_frame = QtGui.QFrame(self)
+
         traces_layout = QtGui.QHBoxLayout()
 
         right_frame = QtGui.QFrame()
@@ -560,6 +561,8 @@ class Window(QtGui.QWidget):
         traces_layout.addWidget(left_frame)
         traces_layout.addWidget(right_frame)
         traces_frame.setLayout(traces_layout)
+        traces_frame.setGraphicsEffect(effect)
+
         return traces_frame
     
     def createAnalysisSection(self):
@@ -733,19 +736,12 @@ class Window(QtGui.QWidget):
             for j in range(6):
                 table.setItem(i, j, self.createTableWidgetItem("Item " + str(i) + " " + str(j)))
 
-        '''
-        #add spanning widget to right-most element of first row
-        table.setItem(0,2,table_item)
-
-        #span Right-Most Item of First Row Here
-        table.setSpan(0,2,table.rowCount(), 1)
-        '''
-
         table.setShowGrid(False)
         table.verticalHeader().setVisible(False)
         table.resizeColumnsToContents()
         table.resizeRowsToContents()
         table.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        table.setSizePolicy(QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Minimum)
 
         header = table.horizontalHeader()
         header.setResizeMode(1, QtGui.QHeaderView.Stretch)
@@ -754,9 +750,8 @@ class Window(QtGui.QWidget):
         header.setResizeMode(4, QtGui.QHeaderView.Stretch)
         header.setResizeMode(5, QtGui.QHeaderView.Stretch)
 
-        #header.setSectionResizeMode(QtGui.QHeaderView.Stretch)
-
         table.setHorizontalHeader(header)
+
 
         central_widget_layout = QtGui.QVBoxLayout()
         central_widget_layout.addWidget(self._central_widget)
@@ -1176,7 +1171,6 @@ class CustomLineEdit(QtGui.QLineEdit):
 class CustomCheckBox(QtGui.QCheckBox):
     def __init__(self, parent=None):
         super(CustomCheckBox, self).__init__(parent)
-
 
 class CustomComboBox(QtGui.QComboBox):
     def __init__(self, parent=None):
