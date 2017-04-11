@@ -1,42 +1,9 @@
 QAbstractButton[buttonType="topPanelButton"]
 {
-    background-color: black;
+    background-color: 6533AC;
     border-width: 0px;
     border-radius: 0px;
-    font: bold 14px;
-    min-width: 10em;
     padding: 0px;
-}
-
-QAbstractButton[buttonType="topPanelButton"]:focus
-{
-  background-color: black;
-  border: none;
-  color: white;
-  padding: 3px 20px;
-}
-
-
-QAbstractButton[buttonType="topPanelButton"]:hover,
-QAbstractButton[buttonType="topPanelButton"]:hover:focus
-{
-  background-color: #2196f3;
-  border-color: #ffffff;
-}
-
-
-QAbstractButton[buttonType="topPanelButton"]:pressed,
-QAbstractButton[buttonType="topPanelButton"]:pressed:focus
-{
-  background-color: #f50057;
-  border: none;
-  color: white;
-}
-
-QAbstractButton[buttonType="topPanelButton"]:disabled
-{
-    color: #cccccc;
-    background-color: #cccccc
 }
 
 QAbstractButton[buttonType="leftPanelButton"]
@@ -89,6 +56,35 @@ QAbstractButton[buttonType="leftPanelButton"]:checked
 }*/
 
 
+QTableWidgetItem[cellType="electrodeHeader"]
+{
+
+}
+
+QTableWidget[tableType="stackUpLayerTable"]
+{
+    border: none;
+    border-top: 4px solid #ededed;
+}
+
+QTableWidget[tableType="stackUpLayerTable"]::item
+{
+    padding: 3px;
+}
+
+QHeaderView[headerType="stackUpLayerTableHeader"]
+{
+    background-color: rgba(0,0,0,0);
+}
+
+QLabel[labelType="stackUpDescLabel"]
+{
+    background-color: rgba(0,0,0,0);
+    color: #dcdcdc;
+    font: bold 12px;
+    border: none;
+}
+
 QHeaderView[headerType="tableHeader"]:section
 {
     background-color: white;
@@ -96,22 +92,230 @@ QHeaderView[headerType="tableHeader"]:section
     border: 0px;
     font: bold 12px;
     min-height: 20px;
-    padding-bottom: 10px;
+    padding-bottom: 5px;
 }
 
 QLabel[labelType="simulationSummaryLabel"]
 {
-border: 0px;
-background-color: white;
-color: black;
-padding: 3px;
-font: bold 16px;
+    border: 0px;
+    background-color: white;
+    color: black;
+    font: bold 13px;
+}
+
+QLabel[labelType="orLabel"]
+{
+    color: #777777;
+    font-size: 12px;
+}
+
+QLabel[labelType="bottomLabel"]
+{
+    color: #777777;
+    font-size: 10px;
+}
+
+QLabel[labelType="pfLabel"]
+{
+    color: #000000;
+    font: bold 12px;
+    padding-right: 12px;
+}
+
+QLabel[labelType="fieldLabel"]
+{
+    color: #000000;
+    font: bold 12px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+QLabel[labelType="sectionLabel"]
+{
+    color: #aaaaaa;
+    font: bold 12px;
+    margin-top: 8px;
+    margin-bottom: 4px;
+}
+
+QLabel[labelType="newControllerLabel"]
+{
+    color: 000000;
+    font: bold 16px;
+}
+
+QLabel[labelType="newControllerInfoLabel"]
+{
+    color: #666666;
+    font: bold 14px;
 }
 
 QFrame[frameType="simulationSummaryFrame"]
 {
-border: 0px;
-background-color: white;
-color: black;
-padding: 3px;
+    border: 0px;
+    background-color: white;
+    color: black;
+    padding: 3px;
+}
+
+QFrame[frameType="topFrame"]
+{
+    background-color: #17202b;
+    color: #ededed;
+}
+
+QFrame[frameType="leftFrame"]
+{
+    background-color: #17202b;
+    color: #ededed;
+    padding-top: 2em;
+}
+
+QFrame[frameType="sectionFrame"]
+{
+    background-color: #ffffff;
+    border-radius: 2px;
+}
+
+QWidget[frameType="statusBar"]
+{
+    background-color: #0db754;
+    color: #ededed;
+    font: bold 12px;
+}
+
+QWidget[widgetType="centralWidget"]
+{
+    padding: 6px;
+}
+
+QAbstractButton[buttonType="leftFrameButton"]
+{
+    background-color: rgba(0,0,0,0);
+    border: none;
+    color: #ededed;
+    padding: 6px 0px 6px 12px;
+    font-size: 13px;
+}
+
+QAbstractButton[buttonType="leftFrameButton"]:hover
+{
+    background-color: rgba(255,255,255,30);
+    border-left: 4px solid #3c267a;
+    padding-left: 8px;
+}
+
+QAbstractButton[buttonType="topFrameButton"]
+{
+    background-color: rgba(0,0,0,0);
+    border: none;
+    color: #ededed;
+    padding-left: 6px;
+    padding-right: 6px;
+    font-size: 13px;
+}
+
+QAbstractButton[buttonType="topFrameButton"]:hover
+{
+    background-color: rgba(255,255,255,30);
+}
+
+QAbstractButton[buttonType="solveButton"]
+{
+    background-color: #0db754;
+    border: 2px solid #0db754;
+    border-radius: 21px;
+    font-size: 16px;
+    color: #ededed;
+    padding: 8px 16px 8px 16px;
+}
+
+QAbstractButton[buttonType="borderOnlyButton"]
+{
+    color: #0db754;
+    border: 2px solid #0db754;
+    border-radius: 21px;
+    font-size: 16px;
+    padding: 8px 16px 8px 16px;
+}
+
+QAbstractButton[buttonType="identityButton"]
+{
+    color: #ededed;
+    background-color: rgba(0,0,0,0);
+    font-size: 16px;
+}
+
+QAbstractButton[buttonType="bottomLeftButton"]
+{
+    color: #ededed;
+    background-color: rgba(0,0,0,0);
+    font-size: 12px;
+}
+
+QLineEdit[fieldType="lineEdit"]
+{
+    padding-left: 6px;
+    padding-right: 6px;
+    border: 1px solid #dddddd;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    border-radius: 8px;
+}
+
+QComboBox[fieldType="comboBox"]
+{
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+QComboBox[fieldType="comboBox"]::drop-down {
+    border: none;
+}
+
+QComboBox[fieldType="comboBox"]::down-arrow {
+    image: url(./images/arrow_down.svg);
+    width: 20px;
+    height: 20px;
+}
+
+QLabel[labelType="ncBorderLabel"]
+{
+    border: 4px solid #ededed;
+}
+
+
+QAbstractButton[buttonType="leftFrameButton"]:checked
+{
+    background-color: #5e90fa;
+    border-left: 4px solid #3c267a;
+    padding-left: 8px;
+}
+
+QAbstractButton[buttonType="stackupAddMaterialButton"]
+{
+    color: #ffffff;
+    background-color: #f0c40e;
+    border-radius: 13px;
+    font-size: 12px;
+    padding: 6px 12px 6px 12px;
+}
+
+QAbstractButton[buttonType="borderOnlyStackupButton"]
+{
+    color: #f0c40e;
+    border: 2px solid #f0c40e;
+    background-color: rgba(0,0,0,0);
+    border-radius: 14px;
+    font-size: 12px;
+    padding: 6px 12px 6px 12px;
+}
+
+QFrame[frameType="layerRowFrame"]
+{
+    padding: 4px 16px 4px 16px;
 }
