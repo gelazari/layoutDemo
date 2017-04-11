@@ -324,9 +324,9 @@ class Window(QtGui.QWidget):
         self.layer_list = []
 
         for i in range(10):
-            test_frame = QtGui.QFrame(stackup_frame)
-            test_layout = QtGui.QGridLayout(test_frame)
-            test_layout.setContentsMargins(0,0,0,0)
+            layer_frame = QtGui.QFrame(stackup_frame)
+            layer_frame_layout = QtGui.QGridLayout(layer_frame)
+            layer_frame_layout.setContentsMargins(0,0,0,0)
 
             layer_label = QtGui.QLabel("Layer "+str(i))
             layer_label.setObjectName("layer_label")
@@ -343,22 +343,23 @@ class Window(QtGui.QWidget):
             grounded = QtGui.QCheckBox()
             grounded.setObjectName("grounded")
 
-            test_layout.setColumnStretch(0, 1)
-            test_layout.setColumnStretch(1, 1)
-            test_layout.setColumnStretch(2, 1)
-            test_layout.setColumnStretch(3, 1)
-            test_layout.setColumnStretch(4, 1)
+            layer_frame_layout.setColumnStretch(0, 1)
+            layer_frame_layout.setColumnStretch(1, 1)
+            layer_frame_layout.setColumnStretch(2, 1)
+            layer_frame_layout.setColumnStretch(3, 1)
+            layer_frame_layout.setColumnStretch(4, 1)
 
-            test_layout.addWidget(layer_label, 0, 0)
-            test_layout.addWidget(material, 0, 1)
-            test_layout.addWidget(rel_perm, 0, 2)
-            test_layout.addWidget(thickness, 0, 3)
-            test_layout.addWidget(grounded, 0, 4, QtCore.Qt.AlignCenter)
+            layer_frame_layout.addWidget(layer_label, 0, 0)
+            layer_frame_layout.addWidget(material, 0, 1)
+            layer_frame_layout.addWidget(rel_perm, 0, 2)
+            layer_frame_layout.addWidget(thickness, 0, 3)
+            layer_frame_layout.addWidget(grounded, 0, 4, QtCore.Qt.AlignCenter)
 
-            test_frame.setProperty("frameType", "layerRowFrame")
-            right_frame.addWidget(test_frame)
+            layer_frame.setProperty("frameType", "layerRowFrame")
+            print(layer_frame.height())
+            right_frame.addWidget(layer_frame)
 
-            self.layer_list.append(test_frame)
+            self.layer_list.append(layer_frame)
 
         bottom_layout.addLayout(right_frame)
         self.disableLayer(3)
@@ -406,13 +407,159 @@ class Window(QtGui.QWidget):
     
     def createTracesSection(self):
         traces_frame = QtGui.QFrame(self)
+        traces_layout = QtGui.QHBoxLayout()
+
+        right_frame = QtGui.QFrame()
+        right_frame_layout = QtGui.QVBoxLayout()
+
+        right_top_frame = QtGui.QFrame()
+        right_top_layout = QtGui.QVBoxLayout()
+
+        optional_label = QtGui.QLabel("Optional")
+        optional_label.setProperty("labelType", "tracesDescLabel")
+
+        dieelectric_label = QtGui.QLabel("Dieelectric Constant Er")
+        dieelectric_field = CustomLineEdit()
+
+        dieelectric_layout = QtGui.QGridLayout()
+        dieelectric_layout.addWidget(dieelectric_label,0,0)
+        dieelectric_layout.addWidget(dieelectric_field,0,0)
+        dieelectric_layout.setColumnStretch(0,2)
+        dieelectric_layout.setColumnStretch(1,1)
+        dieelectric_layout.setColumnStretch(2,1)
+
+        resistance_checkbox = CustomCheckBox()
+        resistance_label = QtGui.QLabel("Resistance Computation")
+
+        resistance_layout = QtGui.QGridLayout()
+        resistance_layout.addWidget(resistance_checkbox,0,0)
+        resistance_layout.addWidget(resistance_label,0,1)
+        resistance_layout.setColumnStretch(0,1)
+        resistance_layout.setColumnStretch(1,3)
+
+        resistivity_layout = QtGui.QGridLayout()
+        resistivity_label = QtGui.QLabel("Resistivity (p)")
+        resistivety_field = CustomLineEdit()
+        resistivity_unit_label = QtGui.QLabel("W*m")
+        resistivity_layout.addWidget(resistivity_label,0,0)
+        resistivity_layout.addWidget(resistivety_field,0,1)
+        resistivity_layout.addWidget(resistivity_unit_label,0,2)
+        resistivity_layout.setColumnStretch(0,2)
+        resistivity_layout.setColumnStretch(1,2)
+        resistivity_layout.setColumnStretch(2,1)
+
+        left_frame = QtGui.QFrame()
+        left_frame.setFixedWidth(250)
+        left_frame.setProperty("frameType", "sectionFrame") #Same styling
+        left_frame_layout = QtGui.QVBoxLayout()
+
+        left_top_layout = QtGui.QGridLayout()
+
+        traces_label = QtGui.QLabel("TRACES")
+        traces_label.setProperty("labelType", "tracesDescLabel")
+
+        no_of_traces_label = QtGui.QLabel("No of traces")
+        no_of_traces_label.setProperty("labelType", "tracesNormalLabel")
+
+        width_label = QtGui.QLabel("Width (W)")
+        width_label.setProperty("labelType", "tracesNormalLabel")
+
+        thickness_label = QtGui.QLabel("Thickness (T)")
+        thickness_label.setProperty("labelType", "tracesNormalLabel")
+
+        no_of_traces_field = CustomLineEdit()
+        width_field = CustomLineEdit()
+        thickness_field = CustomLineEdit()
+
+        left_top_layout.addWidget(no_of_traces_label, 0, 0)
+        left_top_layout.addWidget(width_label, 1, 0)
+        left_top_layout.addWidget(thickness_label, 2, 0)
+
+        left_top_layout.addWidget(no_of_traces_field, 0, 1)
+        left_top_layout.addWidget(width_field, 1, 1)
+        left_top_layout.addWidget(thickness_field, 2, 1)
+
+        left_top_layout.setColumnStretch(0,2)
+        left_top_layout.setColumnStretch(1,1)
+        left_top_layout.setColumnStretch(2,1)
+
+        spacing_margins_label = QtGui.QLabel("SPACING & MARGINS")
+        spacing_margins_label.setProperty("labelType", "tracesDescLabel")
+        spacing_label = QtGui.QLabel("Spacing (S)")
+        spacing_label.setProperty("labelType", "tracesNormalLabel")
+
+        margins_label = QtGui.QLabel("Margins")
+        margins_label.setProperty("labelType", "tracesNormalLabel")
+
+        spacing_field = CustomLineEdit()
+
+        spacing_layout = QtGui.QGridLayout()
+        spacing_layout.addWidget(spacing_label,0,0)
+        spacing_layout.addWidget(spacing_field,0,1)
+
+        spacing_layout.setColumnStretch(0,2)
+        spacing_layout.setColumnStretch(1,1)
+        spacing_layout.setColumnStretch(2,1)
+
+        margins_layout = QtGui.QGridLayout()
+        margins_layout.setAlignment(QtCore.Qt.AlignCenter)
+
+        x1_label = QtGui.QLabel("X1")
+        x2_label = QtGui.QLabel("X2")
+        y1_label = QtGui.QLabel("Y1")
+        y2_label = QtGui.QLabel("Y2")
+
+        x1_label.setAlignment(QtCore.Qt.AlignCenter)
+        x2_label.setAlignment(QtCore.Qt.AlignCenter)
+        y1_label.setAlignment(QtCore.Qt.AlignCenter)
+        y2_label.setAlignment(QtCore.Qt.AlignCenter)
+
+        x1_field = CustomLineEdit()
+        x2_field = CustomLineEdit()
+        y1_field = CustomLineEdit()
+        y2_field = CustomLineEdit()
+
+        margins_layout.addWidget(x1_label,0,0)
+        margins_layout.addWidget(x2_label,1,0)
+        margins_layout.addWidget(y1_label,2,0)
+        margins_layout.addWidget(y2_label,3,0)
+
+        margins_layout.addWidget(x1_field,0,1)
+        margins_layout.addWidget(x2_field,1,1)
+        margins_layout.addWidget(y1_field,2,1)
+        margins_layout.addWidget(y2_field,3,1)
+
+        margins_layout.setColumnStretch(0,2)
+        margins_layout.setColumnStretch(1,1)
+        margins_layout.setColumnStretch(2,1)
 
         effect = QtGui.QGraphicsDropShadowEffect(traces_frame)
         effect.setOffset(0, 0)
         effect.setBlurRadius(2)
         effect.setColor(QtGui.QColor("#333333"))
-        traces_frame.setGraphicsEffect(effect)
+        left_frame.setGraphicsEffect(effect)
 
+     #   right_top_layout.addWidget(optional_label)
+    #    right_top_layout.addLayout(dieelectric_layout)
+   #     right_top_layout.addLayout(resistance_layout)
+  #      right_top_layout.addLayout(resistivity_layout)
+ #       right_top_frame.setLayout(right_frame_layout)
+
+#        right_frame_layout.addWidget(right_top_frame)
+
+        #right_frame.setLayout(right_frame_layout)
+
+        left_frame_layout.addWidget(traces_label)
+        left_frame_layout.addLayout(left_top_layout)
+        left_frame_layout.addWidget(spacing_margins_label)
+        left_frame_layout.addLayout(spacing_layout)
+        left_frame_layout.addWidget(margins_label)
+        left_frame_layout.addLayout(margins_layout)
+        left_frame.setLayout(left_frame_layout)
+
+        traces_layout.addWidget(left_frame)
+        traces_layout.addWidget(right_frame)
+        traces_frame.setLayout(traces_layout)
         return traces_frame
     
     def createAnalysisSection(self):
@@ -1025,6 +1172,11 @@ class CustomLineEdit(QtGui.QLineEdit):
     def focusOutEvent(self, QFocusEvent):
         QtGui.QLineEdit.focusOutEvent(self, QtGui.QFocusEvent(QtCore.QEvent.FocusOut))
         self.setGraphicsEffect(None)
+
+class CustomCheckBox(QtGui.QCheckBox):
+    def __init__(self, parent=None):
+        super(CustomCheckBox, self).__init__(parent)
+
 
 class CustomComboBox(QtGui.QComboBox):
     def __init__(self, parent=None):

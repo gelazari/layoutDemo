@@ -319,3 +319,18 @@ QFrame[frameType="layerRowFrame"]
 {
     padding: 4px 16px 4px 16px;
 }
+
+QLabel[labelType="tracesDescLabel"]
+{
+    background-color: rgba(0,0,0,0);
+    color: #dcdcdc;
+    font: bold 12px;
+    border: none;
+    padding-left: 8px;
+}
+
+QLabel[labelType="tracesNormalLabel"]
+{
+    font: 12px;
+    padding-left: 8px;
+}
