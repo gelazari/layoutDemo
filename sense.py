@@ -1,134 +1,10 @@
 from PyQt4 import QtCore, QtGui
-
-class ItemWrapper(object):
-    def __init__(self, i, p):
-        self.item = i
-        self.position = p
-
-
-class SenseLayout(QtGui.QLayout):
-    Left, Top, Bottom, Middle = range(4)
-    MinimumSize, SizeHint = range(2)
-
-    def __init__(self, parent=None, margin=0, spacing=-1):
-        super(SenseLayout, self).__init__(parent)
-
-        self.setMargin(margin)
-        self.setSpacing(spacing)
-        self.list = []
-
-    def __del__(self):
-        l = self.takeAt(0)
-        while l:
-            l = self.takeAt(0)
-
-    def addItem(self, item):
-        self.add(item, SenseLayout.West)
-
-    def addWidget(self, widget, position):
-        self.add(QtGui.QWidgetItem(widget), position)
-
-    def expandingDirections(self):
-        return QtCore.Qt.Horizontal | QtCore.Qt.Vertical
-
-    def hasHeightForWidth(self):
-        return False
-
-    def count(self):
-        return len(self.list)
-
-    def itemAt(self, index):
-        if index < len(self.list):
-            return self.list[index].item
-
-        return None
-
-    def minimumSize(self):
-        return self.calculateSize(SenseLayout.MinimumSize)
-
-    def setGeometry(self, rect):
-        center = None
-        eastWidth = 0
-        westWidth = 0
-        northHeight = 0
-        southHeight = 0
-        centerHeight = 0
-
-        super(SenseLayout, self).setGeometry(rect)
-
-        for wrapper in self.list:
-            item = wrapper.item
-            position = wrapper.position
-
-            if position == SenseLayout.Top:
-                item.setGeometry(QtCore.QRect(rect.x(), northHeight,
-                        rect.width(), item.sizeHint().height()))
-
-                northHeight += item.geometry().height() + self.spacing()
-
-            elif position == SenseLayout.Bottom:
-                item.setGeometry(QtCore.QRect(item.geometry().x(),
-                        item.geometry().y(), rect.width(),
-                        item.sizeHint().height()))
-
-                southHeight += item.geometry().height() + self.spacing()
-
-                item.setGeometry(QtCore.QRect(rect.x(),
-                        rect.y() + rect.height() - southHeight + self.spacing(),
-                        item.geometry().width(), item.geometry().height()))
-
-            elif position == SenseLayout.Middle:
-                center = wrapper
-
-        centerHeight = rect.height() - northHeight - southHeight
-
-        for wrapper in self.list:
-            item = wrapper.item
-            position = wrapper.position
-
-            if position == SenseLayout.Left:
-                item.setGeometry(QtCore.QRect(rect.x() + westWidth,
-                        northHeight, item.sizeHint().width(), centerHeight))
-
-                westWidth += item.geometry().width() + self.spacing()
-
-        if center:
-            center.item.setGeometry(QtCore.QRect(westWidth, northHeight,
-                    rect.width() - eastWidth - westWidth, centerHeight))
-
-    def sizeHint(self):
-        return self.calculateSize(SenseLayout.SizeHint)
-
-    def takeAt(self, index):
-        if index >= 0 and index < len(self.list):
-            layoutStruct = self.list.pop(index)
-            return layoutStruct.item
-
-        return None
-
-    def add(self, item, position):
-        self.list.append(ItemWrapper(item, position))
-
-    def calculateSize(self, sizeType):
-        totalSize = QtCore.QSize()
-
-        for wrapper in self.list:
-            position = wrapper.position
-            itemSize = QtCore.QSize()
-
-            if sizeType == SenseLayout.MinimumSize:
-                itemSize = wrapper.item.minimumSize()
-            else: # sizeType == SenseLayout.SizeHint
-                itemSize = wrapper.item.sizeHint()
-
-            if position in (SenseLayout.Top, SenseLayout.Bottom, SenseLayout.Middle):
-                totalSize.setHeight(totalSize.height() + itemSize.height())
-
-            if position in (SenseLayout.Left, SenseLayout.Middle):
-                totalSize.setWidth(totalSize.width() + itemSize.width())
-
-        return totalSize
-
+from custom_checkbox import CustomCheckBox
+from custom_combobox import CustomComboBox
+from custom_lineEdit import CustomLineEdit
+from custom_tableWidget import CustomTableWidget
+from new_controller_dialog import NewControllerDialog
+from senseLayout import SenseLayout
 
 class Window(QtGui.QWidget):
 
@@ -404,44 +280,58 @@ class Window(QtGui.QWidget):
         pattern_frame.setGraphicsEffect(effect)
 
         return pattern_frame
-    
+
     def createTracesSection(self):
         traces_frame = QtGui.QFrame(self)
-
         traces_layout = QtGui.QHBoxLayout()
 
         right_frame = QtGui.QFrame()
         right_frame_layout = QtGui.QVBoxLayout()
+        right_frame_layout.setContentsMargins(12,0,0,0)
 
         right_top_frame = QtGui.QFrame()
+        right_top_frame.setProperty("frameType", "sectionFrame")
+        right_top_frame.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Maximum)
+        right_top_frame.setFixedWidth(250)
         right_top_layout = QtGui.QVBoxLayout()
+
+        right_bot_frame = QtGui.QFrame()
+        right_bot_layout = QtGui.QVBoxLayout()
+        circuit_label = QtGui.QLabel()
+        circuit_label.setPixmap(QtGui.QPixmap("./images/traces/circuit.png"))
 
         optional_label = QtGui.QLabel("Optional")
         optional_label.setProperty("labelType", "tracesDescLabel")
 
         dieelectric_label = QtGui.QLabel("Dieelectric Constant Er")
+        dieelectric_label.setProperty("labelType","tracesNormalLabel")
         dieelectric_field = CustomLineEdit()
 
         dieelectric_layout = QtGui.QGridLayout()
         dieelectric_layout.addWidget(dieelectric_label,0,0)
-        dieelectric_layout.addWidget(dieelectric_field,0,0)
-        dieelectric_layout.setColumnStretch(0,2)
+        dieelectric_layout.addWidget(dieelectric_field,0,1)
+        dieelectric_layout.setColumnStretch(0,1)
         dieelectric_layout.setColumnStretch(1,1)
-        dieelectric_layout.setColumnStretch(2,1)
 
         resistance_checkbox = CustomCheckBox()
+        resistance_checkbox.setProperty("checkBoxType","tracesCheckBox")
         resistance_label = QtGui.QLabel("Resistance Computation")
+        resistance_label.setProperty("labelType","tracesBoldLabel")
+        resistance_label.setAlignment(QtCore.Qt.AlignCenter)
 
         resistance_layout = QtGui.QGridLayout()
         resistance_layout.addWidget(resistance_checkbox,0,0)
         resistance_layout.addWidget(resistance_label,0,1)
-        resistance_layout.setColumnStretch(0,1)
-        resistance_layout.setColumnStretch(1,3)
+        resistance_layout.setColumnStretch(1,1)
 
         resistivity_layout = QtGui.QGridLayout()
         resistivity_label = QtGui.QLabel("Resistivity (p)")
+        resistivity_label.setProperty("labelType","tracesNormalLabel")
+
         resistivety_field = CustomLineEdit()
         resistivity_unit_label = QtGui.QLabel("W*m")
+        resistivity_unit_label.setProperty("labelType", "tracesNormalLabel")
+
         resistivity_layout.addWidget(resistivity_label,0,0)
         resistivity_layout.addWidget(resistivety_field,0,1)
         resistivity_layout.addWidget(resistivity_unit_label,0,2)
@@ -534,21 +424,36 @@ class Window(QtGui.QWidget):
         margins_layout.setColumnStretch(1,1)
         margins_layout.setColumnStretch(2,1)
 
-        effect = QtGui.QGraphicsDropShadowEffect(traces_frame)
-        effect.setOffset(0, 0)
-        effect.setBlurRadius(2)
-        effect.setColor(QtGui.QColor("#333333"))
-        left_frame.setGraphicsEffect(effect)
+        effect_left = QtGui.QGraphicsDropShadowEffect(traces_frame)
+        effect_left.setOffset(0, 0)
+        effect_left.setBlurRadius(2)
+        effect_left.setColor(QtGui.QColor("#333333"))
 
-     #   right_top_layout.addWidget(optional_label)
-    #    right_top_layout.addLayout(dieelectric_layout)
-   #     right_top_layout.addLayout(resistance_layout)
-  #      right_top_layout.addLayout(resistivity_layout)
- #       right_top_frame.setLayout(right_frame_layout)
+        effect_right_top = QtGui.QGraphicsDropShadowEffect(traces_frame)
+        effect_right_top.setOffset(0, 0)
+        effect_right_top.setBlurRadius(2)
+        effect_right_top.setColor(QtGui.QColor("#333333"))
 
-#        right_frame_layout.addWidget(right_top_frame)
+        left_frame.setGraphicsEffect(effect_left)
+        right_top_frame.setGraphicsEffect(effect_right_top)
 
-        #right_frame.setLayout(right_frame_layout)
+        right_top_layout.addWidget(optional_label)
+        right_top_layout.addWidget(self.createSpacer(4))
+        right_top_layout.addLayout(dieelectric_layout)
+        right_top_layout.addWidget(self.createSpacer(16))
+        right_top_layout.addLayout(resistance_layout)
+        right_top_layout.addWidget(self.createSpacer(2))
+        right_top_layout.addLayout(resistivity_layout)
+        right_top_layout.addWidget(self.createSpacer(4))
+        right_top_frame.setLayout(right_top_layout)
+
+        right_bot_layout.addWidget(circuit_label)
+        right_bot_frame.setLayout(right_bot_layout)
+
+        right_frame_layout.addWidget(right_top_frame, 0, QtCore.Qt.AlignTop)
+        right_frame_layout.addWidget(right_bot_frame, 0, QtCore.Qt.AlignBottom)
+
+        right_frame.setLayout(right_frame_layout)
 
         left_frame_layout.addWidget(traces_label)
         left_frame_layout.addLayout(left_top_layout)
@@ -561,8 +466,6 @@ class Window(QtGui.QWidget):
         traces_layout.addWidget(left_frame)
         traces_layout.addWidget(right_frame)
         traces_frame.setLayout(traces_layout)
-        traces_frame.setGraphicsEffect(effect)
-
         return traces_frame
     
     def createAnalysisSection(self):
@@ -736,12 +639,19 @@ class Window(QtGui.QWidget):
             for j in range(6):
                 table.setItem(i, j, self.createTableWidgetItem("Item " + str(i) + " " + str(j)))
 
+        '''
+        #add spanning widget to right-most element of first row
+        table.setItem(0,2,table_item)
+
+        #span Right-Most Item of First Row Here
+        table.setSpan(0,2,table.rowCount(), 1)
+        '''
+
         table.setShowGrid(False)
         table.verticalHeader().setVisible(False)
         table.resizeColumnsToContents()
         table.resizeRowsToContents()
         table.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
-        table.setSizePolicy(QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Minimum)
 
         header = table.horizontalHeader()
         header.setResizeMode(1, QtGui.QHeaderView.Stretch)
@@ -750,8 +660,9 @@ class Window(QtGui.QWidget):
         header.setResizeMode(4, QtGui.QHeaderView.Stretch)
         header.setResizeMode(5, QtGui.QHeaderView.Stretch)
 
-        table.setHorizontalHeader(header)
+        #header.setSectionResizeMode(QtGui.QHeaderView.Stretch)
 
+        table.setHorizontalHeader(header)
 
         central_widget_layout = QtGui.QVBoxLayout()
         central_widget_layout.addWidget(self._central_widget)
@@ -952,243 +863,11 @@ class Window(QtGui.QWidget):
 
         return left_frame
 
-class CustomTableWidget(QtGui.QTableWidget):
-    def __init__(self, parent = None):
-        super(CustomTableWidget, self).__init__(parent)
-        self.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
-        self.setFocusPolicy(QtCore.Qt.NoFocus)
+    def createSpacer(self, height = 8):
+        spacer = QtGui.QLabel("")
+        spacer.setFixedHeight(height)
+        return spacer
 
-    def selectRow(self, p_int):
-       #do nothing
-       return
-
-    def editItem(self, QTableWidgetItem):
-        # do nothing
-        return
-
-class NewControllerDialog(QtGui.QDialog):
-    Sensitivity, Bits_of_adc = range(2)
-
-    def __init__(self, title, parent=None):
-        super(NewControllerDialog, self).__init__(parent)
-
-        top_frame = self.createTopFrame()
-        bot_frame = self.createBotFrame()
-
-        top_level_layout = QtGui.QVBoxLayout()
-        top_level_layout.setSpacing(0)
-        top_level_layout.setMargin(0)
-
-        top_level_layout.addWidget(top_frame)
-        top_level_layout.addWidget(bot_frame)
-
-        self.setWindowTitle(title)
-        self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
-        self.setLayout(top_level_layout)
-
-    def createTopFrame(self):
-
-        top_frame = QtGui.QFrame(self)
-        top_frame_layout = QtGui.QVBoxLayout()
-        top_frame.setFixedHeight(200)
-
-        img = QtGui.QLabel()
-        img.setPixmap(QtGui.QPixmap("./images/new_controller.png"))
-
-        nc_bold_label = QtGui.QLabel("New Controller")
-        nc_bold_label.setProperty("labelType","newControllerLabel")
-
-        info_label = QtGui.QLabel("Insert your specs. You will be able to edit or delete your controller once created.")
-        info_label.setAlignment(QtCore.Qt.AlignCenter)
-        info_label.setProperty("labelType", "newControllerInfoLabel")
-        info_label.setWordWrap(True)
-
-        top_frame_layout.addWidget(img, 0, QtCore.Qt.AlignTop | QtCore.Qt.AlignHCenter)
-        top_frame_layout.addWidget(nc_bold_label, 0, QtCore.Qt.AlignTop | QtCore.Qt.AlignHCenter)
-        top_frame_layout.addWidget(info_label, 0, QtCore.Qt.AlignTop | QtCore.Qt.AlignHCenter)
-        top_frame.setLayout(top_frame_layout)
-
-        top_frame.setStyleSheet("background-color: #ededed;")
-
-        return top_frame
-
-    def createBotFrame(self):
-        bot_frame = QtGui.QFrame(self)
-        bot_frame.setStyleSheet("background-color: #ffffff;")
-
-        bot_frame_layout = QtGui.QHBoxLayout()
-
-        self.general_label = QtGui.QLabel("GENERAL")
-        self.empty_label = QtGui.QLabel(" ")
-        self.company_label = QtGui.QLabel("Company")
-        self.product_label = QtGui.QLabel("Product")
-
-        self.technical_label = QtGui.QLabel("TECHNICAL")
-        self.cmin_label = QtGui.QLabel("C min")
-        self.cmax_label = QtGui.QLabel("C max ")
-
-        self.electrodes_label = QtGui.QLabel("ELECTRODES")
-        self.x_electrodes_label = QtGui.QLabel("x Electrodes")
-        self.y_electrodes_label = QtGui.QLabel("y Electrodes")
-
-        self.sensitivity_label = QtGui.QLabel("Sensitivity")
-        self.bits_of_adc_label = QtGui.QLabel("Bits of ADC")
-
-        self.company_label.setProperty("labelType", "fieldLabel")
-        self.product_label.setProperty("labelType", "fieldLabel")
-        self.cmin_label.setProperty("labelType", "fieldLabel")
-        self.cmax_label.setProperty("labelType", "fieldLabel")
-        self.x_electrodes_label.setProperty("labelType", "fieldLabel")
-        self.y_electrodes_label.setProperty("labelType", "fieldLabel")
-        self.sensitivity_label.setProperty("labelType", "fieldLabel")
-        self.bits_of_adc_label.setProperty("labelType", "fieldLabel")
-
-        self.general_label.setProperty("labelType", "sectionLabel")
-        self.technical_label.setProperty("labelType", "sectionLabel")
-        self.electrodes_label.setProperty("labelType", "sectionLabel")
-        self.empty_label.setProperty("labelType", "sectionLabel")
-
-        self.cmin_pf_label = QtGui.QLabel("pF")
-        self.cmax_pf_label = QtGui.QLabel("pF")
-        self.sensitivity_pf_label = QtGui.QLabel("pF")
-        self.cmin_pf_label.setProperty("labelType", "pfLabel")
-        self.cmax_pf_label.setProperty("labelType", "pfLabel")
-        self.sensitivity_pf_label.setProperty("labelType", "pfLabel")
-
-        self.sensitivity_border_label = QtGui.QLabel()
-        self.sensitivity_border_label.setProperty("labelType", "ncBorderLabel")
-        self.sensitivity_border_label.setFixedHeight(8)
-
-        self.bits_of_adc_border_label = QtGui.QLabel()
-        self.bits_of_adc_border_label.setProperty("labelType", "ncBorderLabel")
-        self.bits_of_adc_border_label.setFixedHeight(8)
-
-        self.company_field = CustomLineEdit()
-        self.product_field = CustomLineEdit()
-        self.cmin_field = CustomLineEdit()
-        self.cmax_field = CustomLineEdit()
-        self.x_electrodes_field = CustomLineEdit()
-        self.y_electrodes_field = CustomLineEdit()
-        self.sensitivity_field = CustomLineEdit(field = NewControllerDialog.Sensitivity)
-        self.bits_of_adc_field = CustomLineEdit(field = NewControllerDialog.Bits_of_adc)
-
-        self.company_field.setFixedHeight(24)
-        self.product_field.setFixedHeight(24)
-        self.cmin_field.setFixedHeight(24)
-        self.cmax_field.setFixedHeight(24)
-        self.x_electrodes_field.setFixedHeight(24)
-        self.y_electrodes_field.setFixedHeight(24)
-        self.sensitivity_field.setFixedHeight(24)
-        self.bits_of_adc_field.setFixedHeight(24)
-
-        cmin_layout = QtGui.QHBoxLayout()
-        cmax_layout = QtGui.QHBoxLayout()
-        sensitivity_layout = QtGui.QHBoxLayout()
-
-        cmin_layout.addWidget(self.cmin_field)
-        cmin_layout.addWidget(self.cmin_pf_label)
-        cmax_layout.addWidget(self.cmax_field)
-        cmax_layout.addWidget(self.cmax_pf_label)
-        sensitivity_layout.addWidget(self.sensitivity_field)
-        sensitivity_layout.addWidget(self.sensitivity_pf_label)
-
-        left_row = QtGui.QFormLayout()
-        right_row = QtGui.QFormLayout()
-
-        left_row.setSpacing(12)
-        right_row.setSpacing(12)
-
-        left_row.addRow(self.general_label)
-        left_row.addRow(self.company_label, self.company_field)
-        left_row.addRow(self.technical_label)
-        left_row.addRow(self.cmin_label, cmin_layout)
-        left_row.addRow(self.cmax_label, cmax_layout)
-        left_row.addRow(self.sensitivity_border_label)
-        left_row.addRow(self.sensitivity_label, sensitivity_layout)
-
-        right_row.addRow(self.empty_label)
-        right_row.addRow(self.product_label, self.product_field)
-        right_row.addRow(self.electrodes_label)
-        right_row.addRow(self.x_electrodes_label, self.x_electrodes_field)
-        right_row.addRow(self.y_electrodes_label, self.y_electrodes_field)
-        right_row.addRow(self.bits_of_adc_border_label)
-        right_row.addRow(self.bits_of_adc_label, self.bits_of_adc_field)
-
-        bot_frame_layout.addLayout(left_row, 2)
-        bot_frame_layout.addLayout(right_row, 2)
-        bot_frame.setLayout(bot_frame_layout)
-
-        return bot_frame
-
-    def setBottomFieldVisibility(self, item):
-        if item == NewControllerDialog.Sensitivity:
-            self.bits_of_adc_border_label.setStyleSheet("border: 4px solid #ededed");
-            self.bits_of_adc_label.setStyleSheet("color: #dcdcdc;")
-            self.bits_of_adc_field.setStyleSheet("color: #dcdcdc;")
-
-            self.sensitivity_pf_label.setStyleSheet("color: black;")
-            self.sensitivity_label.setStyleSheet("color: black;")
-            self.sensitivity_border_label.setStyleSheet("border: 4px solid #6533AC")
-            self.sensitivity_field.setStyleSheet("color: blackl")
-
-        elif item == NewControllerDialog.Bits_of_adc:
-            self.sensitivity_border_label.setStyleSheet("border: 4px solid #ededed");
-            self.sensitivity_label.setStyleSheet("color: #dcdcdc;")
-            self.sensitivity_pf_label.setStyleSheet("color: #dcdcdc");
-            self.sensitivity_field.setStyleSheet("color: #dcdcdc;")
-
-            self.bits_of_adc_label.setStyleSheet("color: black;")
-            self.bits_of_adc_field.setStyleSheet("color: black;")
-            self.bits_of_adc_border_label.setStyleSheet("border: 4px solid #6533AC")
-
-class CustomLineEdit(QtGui.QLineEdit):
-    def __init__(self, parent=None, field = None):
-        super(CustomLineEdit, self).__init__(parent)
-        self.field = field
-        self.setProperty("fieldType", "lineEdit")
-
-    def focusInEvent(self, QFocusEvent):
-        QtGui.QLineEdit.focusInEvent(self, QtGui.QFocusEvent(QtCore.QEvent.FocusIn))
-
-        if self.field != None:
-            self.parent().parent().setBottomFieldVisibility(self.field)
-            effect = QtGui.QGraphicsDropShadowEffect(self)
-            effect.setOffset(0, 0)
-            effect.setBlurRadius(10)
-            effect.setColor(QtGui.QColor("#6533AC"))
-            self.setGraphicsEffect(effect)
-        else:
-            effect = QtGui.QGraphicsDropShadowEffect(self)
-            effect.setOffset(0, 0)
-            effect.setBlurRadius(10)
-            effect.setColor(QtGui.QColor("#1053DA"))
-            self.setGraphicsEffect(effect)
-
-    def focusOutEvent(self, QFocusEvent):
-        QtGui.QLineEdit.focusOutEvent(self, QtGui.QFocusEvent(QtCore.QEvent.FocusOut))
-        self.setGraphicsEffect(None)
-
-class CustomCheckBox(QtGui.QCheckBox):
-    def __init__(self, parent=None):
-        super(CustomCheckBox, self).__init__(parent)
-
-class CustomComboBox(QtGui.QComboBox):
-    def __init__(self, parent=None):
-        super(CustomComboBox, self).__init__(parent)
-        self.setProperty("fieldType", "comboBox")
-
-    def focusInEvent(self, QFocusEvent):
-        QtGui.QComboBox.focusInEvent(self, QtGui.QFocusEvent(QtCore.QEvent.FocusIn))
-
-        effect = QtGui.QGraphicsDropShadowEffect(self)
-        effect.setOffset(0, 0)
-        effect.setBlurRadius(15)
-        effect.setColor(QtGui.QColor("#1053DA"))
-        self.setGraphicsEffect(effect)
-
-    def focusOutEvent(self, QFocusEvent):
-        QtGui.QComboBox.focusOutEvent(self, QtGui.QFocusEvent(QtCore.QEvent.FocusOut))
-        self.setGraphicsEffect(None)
 
 if __name__ == '__main__':
 

@@ -331,6 +331,11 @@ QLabel[labelType="tracesDescLabel"]
 
 QLabel[labelType="tracesNormalLabel"]
 {
-    font: 12px;
+    font: bold 12px;
     padding-left: 8px;
+}
+
+QCheckBox[checkBoxType="tracesCheckBox"]
+{
+    padding-left: 10px;
 }
